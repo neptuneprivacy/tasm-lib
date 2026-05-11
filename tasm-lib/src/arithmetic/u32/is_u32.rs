@@ -88,7 +88,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn rust_shadow() {
         ShadowedClosure::new(IsU32).test();
     }
@@ -99,7 +99,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn is_u32_benchmark() {
         ShadowedClosure::new(IsU32).bench();
     }

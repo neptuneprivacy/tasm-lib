@@ -285,12 +285,12 @@ mod tests {
     use crate::rust_shadowing_helper_functions::list;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn prop_test_xfe_digest() {
         ShadowedFunction::new(Zip::new(DataType::Xfe, DataType::Digest)).test();
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn list_prop_test_more_types() {
         ShadowedFunction::new(Zip::new(DataType::Bfe, DataType::Bfe)).test();
         ShadowedFunction::new(Zip::new(DataType::U64, DataType::U32)).test();
@@ -301,7 +301,7 @@ mod tests {
         ShadowedFunction::new(Zip::new(DataType::Digest, DataType::Digest)).test();
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn zipping_u32s_with_x_field_elements_correspond_to_bfieldcodec(
         left_list: Vec<u32>,
         #[strategy(vec(arb(), #left_list.len()))] right_list: Vec<XFieldElement>,
@@ -341,7 +341,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedFunction::new(Zip::new(DataType::Xfe, DataType::Digest)).bench();
     }

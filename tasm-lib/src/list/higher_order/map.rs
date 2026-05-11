@@ -609,7 +609,7 @@ mod tests {
         ShadowedFunction::new(ChainMap::<15>::new(f())).test();
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn test_with_raw_function_identity_on_bfe() {
         let f = || {
             InnerFunction::RawCode(RawCode::new(
@@ -621,7 +621,7 @@ mod tests {
         test_chain_map_with_different_num_input_lists(f);
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn test_with_raw_function_bfe_lift() {
         let f = || {
             InnerFunction::RawCode(RawCode::new(
@@ -633,7 +633,7 @@ mod tests {
         test_chain_map_with_different_num_input_lists(f);
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn test_with_raw_function_xfe_get_coeff_0() {
         let f = || {
             InnerFunction::RawCode(RawCode::new(
@@ -645,7 +645,7 @@ mod tests {
         test_chain_map_with_different_num_input_lists(f);
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn test_with_raw_function_square_on_bfe() {
         let f = || {
             InnerFunction::RawCode(RawCode::new(
@@ -657,7 +657,7 @@ mod tests {
         test_chain_map_with_different_num_input_lists(f);
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn test_with_raw_function_square_plus_n_on_bfe() {
         // Inner function calculates `|x| -> x*x + n`, where `x` is the list element,
         // and `n` is the same value for all elements.
@@ -681,7 +681,7 @@ mod tests {
         test_case::<10>();
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn test_with_raw_function_square_on_xfe() {
         let f = || {
             InnerFunction::RawCode(RawCode::new(
@@ -693,7 +693,7 @@ mod tests {
         test_chain_map_with_different_num_input_lists(f);
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn test_with_raw_function_xfe_to_digest() {
         let f = || {
             InnerFunction::RawCode(RawCode::new(
@@ -705,7 +705,7 @@ mod tests {
         test_chain_map_with_different_num_input_lists(f);
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn test_with_raw_function_digest_to_xfe() {
         let f = || {
             InnerFunction::RawCode(RawCode::new(
@@ -717,7 +717,7 @@ mod tests {
         test_chain_map_with_different_num_input_lists(f);
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn test_with_raw_function_square_on_xfe_plus_another_xfe() {
         fn test_case<const N: usize>() {
             let offset = ChainMap::<{ N }>::NUM_INTERNAL_REGISTERS;
@@ -747,7 +747,7 @@ mod tests {
         test_case::<7>();
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn test_u32_list_to_unit_list() {
         let f = || {
             InnerFunction::RawCode(RawCode::new(
@@ -759,7 +759,7 @@ mod tests {
         test_chain_map_with_different_num_input_lists(f);
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn test_u32_list_to_u64_list() {
         let f = || {
             InnerFunction::RawCode(RawCode::new(
@@ -771,7 +771,7 @@ mod tests {
         test_chain_map_with_different_num_input_lists(f);
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn test_u32_list_to_u128_list_plus_x() {
         // this code only works with 1 input list
         let raw_code = InnerFunction::RawCode(u32_to_u128_add_another_u128());
@@ -785,7 +785,7 @@ mod tests {
         );
     }
 
-    #[proptest(cases = 10)]
+    #[macro_rules_attr::apply(proptest(cases = 10))]
     fn num_internal_registers_is_correct(#[strategy(arb())] guard: BFieldElement) {
         fn test_case<const N: usize>(guard: BFieldElement) {
             let offset = ChainMap::<{ N }>::NUM_INTERNAL_REGISTERS;
@@ -817,7 +817,7 @@ mod tests {
         test_case::<12>(guard);
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn mapping_over_dynamic_length_items_works() {
         let f = || {
             let list_type = DataType::List(Box::new(DataType::Bfe));
@@ -832,7 +832,7 @@ mod tests {
         test_chain_map_with_different_num_input_lists(f);
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn mapping_over_list_of_lists_writing_their_lengths_works() {
         let f = || {
             let list_type = DataType::List(Box::new(DataType::Bfe));
@@ -856,13 +856,13 @@ mod benches {
     use crate::list::higher_order::inner_function::RawCode;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn map_benchmark() {
         let f = InnerFunction::BasicSnippet(Box::new(TestHashXFieldElement));
         ShadowedFunction::new(Map::new(f)).bench();
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn map_with_dyn_items_benchmark() {
         let list_type = DataType::List(Box::new(DataType::Bfe));
         let f = InnerFunction::RawCode(RawCode::new(

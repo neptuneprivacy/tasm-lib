@@ -307,13 +307,13 @@ mod tests {
     use crate::structure::tasm_object::decode_from_memory_with_size;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn conventional_air_constraint_memory_layouts_are_integral() {
         assert!(MemoryLayout::conventional_static().is_integral());
         assert!(MemoryLayout::conventional_dynamic().is_integral());
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn disallow_using_kmalloc_region() {
         let mem_layout = MemoryLayout::Dynamic(DynamicTasmConstraintEvaluationMemoryLayout {
             free_mem_page_ptr: STATIC_MEMORY_LAST_ADDRESS,
@@ -322,7 +322,7 @@ mod tests {
         assert!(!mem_layout.is_integral());
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn disallow_using_dynmalloc_region() {
         let mem_layout = MemoryLayout::Dynamic(DynamicTasmConstraintEvaluationMemoryLayout {
             free_mem_page_ptr: BFieldElement::new(42 * (1u64 << 32)),
@@ -331,7 +331,7 @@ mod tests {
         assert!(!mem_layout.is_integral());
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn disallow_using_dynmalloc_state() {
         let mem_layout = MemoryLayout::Dynamic(DynamicTasmConstraintEvaluationMemoryLayout {
             free_mem_page_ptr: BFieldElement::new(42 * (1u64 << 32)),
@@ -340,7 +340,7 @@ mod tests {
         assert!(!mem_layout.is_integral());
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn disallow_overlapping_regions() {
         let mut dyn_memory_layout = DynamicTasmConstraintEvaluationMemoryLayout {
             free_mem_page_ptr: BFieldElement::new((u32::MAX as u64 - 100) * (1u64 << 32)),
@@ -352,7 +352,7 @@ mod tests {
         assert!(!MemoryLayout::Dynamic(dyn_memory_layout).is_integral());
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn conventional_memory_layout_agrees_with_tvm_proof_stored_at_address_zero() {
         let program = triton_program!(halt);
         let claim = Claim::about_program(&program);
@@ -452,7 +452,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn constraint_evaluation_test() {
         let static_snippet = AirConstraintEvaluation {
             memory_layout: MemoryLayout::Static(an_integral_but_profane_static_memory_layout()),
@@ -633,7 +633,7 @@ mod bench {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn bench_air_constraint_evaluation() {
         ShadowedFunction::new(AirConstraintEvaluation {
             memory_layout: MemoryLayout::Static(an_integral_but_profane_static_memory_layout()),

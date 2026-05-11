@@ -125,7 +125,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn unit() {
         ShadowedClosure::new(TrailingZeros).test();
     }
@@ -136,7 +136,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedClosure::new(TrailingZeros).bench()
     }

@@ -648,7 +648,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn disallow_too_big_dynamically_sized_proof_item() {
         let dequeue_next_as = DequeueNextAs::new(ProofItemVariant::MasterMainTableRows);
         let initial_state = initial_state_with_too_big_master_table_rows();
@@ -690,7 +690,7 @@ mod tests {
             .initial_state_from_proof_and_address(proof_stream.into(), proof_ptr)
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn disallow_trailing_zeros_in_xfe_poly_encoding() {
         let dequeue_next_as = DequeueNextAs::new(ProofItemVariant::FriPolynomial);
         let initial_state = initial_state_with_trailing_zeros_in_xfe_poly_encoding();
@@ -782,14 +782,14 @@ mod tests {
         dequeue_next_as.test_rust_equivalence(init_state);
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn dequeueing_all_proof_items_individually_is_equivalent_in_rust_and_tasm() {
         for variant in ProofItemVariant::iter() {
             dequeueing_is_equivalent_in_rust_and_tasm_prop(variant);
         }
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn dequeuing_as_suggested_element_is_equivalent_in_rust_and_tasm(seed: [u8; 32]) {
         let dequeue_next_as = DequeueNextAs::pseudorandom_new(seed);
         let initial_state = dequeue_next_as.pseudorandom_initial_state(seed, None);
@@ -881,7 +881,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn dequeue_two() {
         let proof_items = vec![ProofItemVariant::MerkleRoot, ProofItemVariant::MerkleRoot];
         let dequeue_multiple = TestHelperDequeueMultipleAs { proof_items };
@@ -889,7 +889,7 @@ mod tests {
         dequeue_multiple.test_rust_equivalence(initial_state);
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn dequeue_multiple(#[strategy(arb())] proof_items: Vec<ProofItem>, seed: [u8; 32]) {
         let proof_items = proof_items.into_iter().map(|i| i.into()).collect_vec();
         let dequeue_multiple = TestHelperDequeueMultipleAs { proof_items };

@@ -151,12 +151,12 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn rust_shadow() {
         ShadowedReadOnlyAlgorithm::new(MerkleStepU64Index).test();
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn unit_test() {
         fn assert_expected_behavior(mt_index: u64, expected_parent_index: u64) {
             let initial_state = MerkleStepU64Index.set_up_initial_state(mt_index);
@@ -194,7 +194,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedReadOnlyAlgorithm::new(MerkleStepU64Index).bench();
     }

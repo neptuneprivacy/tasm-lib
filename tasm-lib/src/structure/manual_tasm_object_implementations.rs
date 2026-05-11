@@ -595,14 +595,9 @@ mod tests {
     use std::collections::HashMap;
     use std::fmt::Debug;
 
-    use proptest::prelude::*;
-    use proptest::test_runner::TestCaseResult;
-    use proptest_arbitrary_interop::arb;
-    use test_strategy::Arbitrary;
-    use test_strategy::proptest;
-
     use super::*;
     use crate::memory::encode_to_memory;
+    use crate::test_prelude::*;
 
     #[derive(Debug, Clone, Arbitrary)]
     struct TestObject<T>
@@ -636,7 +631,7 @@ mod tests {
     /// Generate a test case with the specified name for the specified type.
     macro_rules! gen_test {
         (fn $test_fn:ident for $type:ty) => {
-            #[proptest]
+            #[macro_rules_attr::apply(proptest)]
             fn $test_fn(test_object: TestObject<$type>) {
                 test_object.verify_decoding_properties()?;
             }

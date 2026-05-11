@@ -211,7 +211,7 @@ mod tests {
     use crate::rust_shadowing_helper_functions::list::list_insert;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn verify_table_pbt_main() {
         ShadowedProcedure::new(VerifyTableRows {
             column_type: ColumnType::Main,
@@ -219,7 +219,7 @@ mod tests {
         .test()
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn verify_table_pbt_aux() {
         ShadowedProcedure::new(VerifyTableRows {
             column_type: ColumnType::Aux,
@@ -227,7 +227,7 @@ mod tests {
         .test()
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn verify_table_pbt_quot() {
         ShadowedProcedure::new(VerifyTableRows {
             column_type: ColumnType::Quotient,
@@ -238,11 +238,10 @@ mod tests {
     mod negative_tests {
         use strum::IntoEnumIterator;
         use tasm_lib::test_helpers::test_assertion_failure;
-        use test_strategy::proptest;
 
         use super::*;
 
-        #[proptest(cases = 50)]
+        #[macro_rules_attr::apply(proptest(cases = 50))]
         fn verify_bad_auth_path_crashes_vm(seed: [u8; 32]) {
             let mut rng = StdRng::from_seed(seed);
             let snippets = ColumnType::iter().map(|column_type| VerifyTableRows { column_type });
@@ -256,7 +255,7 @@ mod tests {
             }
         }
 
-        #[proptest(cases = 50)]
+        #[macro_rules_attr::apply(proptest(cases = 50))]
         fn verify_bad_row_list_length(seed: [u8; 32]) {
             let snippets = ColumnType::iter().map(|column_type| VerifyTableRows { column_type });
             for snippet in snippets {
@@ -451,7 +450,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn verify_table_bench_main() {
         ShadowedProcedure::new(VerifyTableRows {
             column_type: ColumnType::Main,
@@ -459,7 +458,7 @@ mod benches {
         .bench()
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn verify_table_bench_aux() {
         ShadowedProcedure::new(VerifyTableRows {
             column_type: ColumnType::Aux,
@@ -467,7 +466,7 @@ mod benches {
         .bench()
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn verify_table_bench_quot() {
         ShadowedProcedure::new(VerifyTableRows {
             column_type: ColumnType::Quotient,

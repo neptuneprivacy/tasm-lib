@@ -155,7 +155,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn pad_and_absorb_all_test() {
         ShadowedProcedure::new(PadAndAbsorbAll).test();
     }

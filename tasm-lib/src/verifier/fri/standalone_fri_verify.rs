@@ -100,11 +100,11 @@ impl CompiledProgram for StandaloneFriVerify {
 #[cfg(test)]
 mod bench {
     use super::*;
-    use crate::snippet_bencher::BenchmarkCase;
+    use crate::test_prelude::*;
     use crate::traits::compiled_program::bench_and_profile_program;
 
     #[ignore = "Very slow, about 340s on my powerful laptop"]
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         let public_input = PublicInput::default();
         let intermediate_state = StandaloneFriVerify::singleton().pseudorandom_intermediate_state();

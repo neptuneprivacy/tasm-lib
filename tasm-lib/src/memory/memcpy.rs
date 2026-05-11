@@ -156,12 +156,12 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn rust_shadow() {
         ShadowedFunction::new(MemCpy).test();
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn exceeding_max_size_crashes_vm(#[strategy(DEFAULT_MAX_DYN_FIELD_SIZE..)] len: u32) {
         // actually filling memory with `len` random elements is a waste of time
         let mut stack = MemCpy.init_stack_for_isolated_run();
@@ -181,7 +181,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedFunction::new(MemCpy).bench();
     }

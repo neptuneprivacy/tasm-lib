@@ -135,12 +135,12 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn rust_shadow_test() {
         ShadowedClosure::new(Log2Floor).test();
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn hi_is_u32_but_lo_is_not(
         #[strategy(0_u32..)]
         #[map(BFieldElement::from)]
@@ -161,7 +161,7 @@ mod tests {
         );
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn hi_is_not_u32_but_lo_is(
         #[strategy(1_u64 << 32..)]
         #[map(BFieldElement::new)]
@@ -182,7 +182,7 @@ mod tests {
         );
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn crash_on_zero() {
         negative_test(
             &ShadowedClosure::new(Log2Floor),
@@ -191,7 +191,7 @@ mod tests {
         );
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn unit_test() {
         fn assert_terminal_stack_is_as_expected(x: u64, expected: u32) {
             let mut expected_stack = Log2Floor.init_stack_for_isolated_run();
@@ -227,7 +227,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedClosure::new(Log2Floor).bench();
     }

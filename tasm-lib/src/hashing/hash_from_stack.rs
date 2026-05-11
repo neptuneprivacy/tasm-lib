@@ -105,7 +105,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn unit() {
         let types = [
             DataType::Bool,
@@ -127,7 +127,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         let types = [DataType::Bfe, DataType::Digest];
         for data_type in types {

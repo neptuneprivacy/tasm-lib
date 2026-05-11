@@ -160,12 +160,12 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn rust_shadow() {
         ShadowedFunction::new(Range).test();
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn invalid_range_crashes_vm(
         #[strategy(1_u32..)] minimum: u32,
         #[strategy(..#minimum)] supremum: u32,
@@ -183,7 +183,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedFunction::new(Range).bench();
     }

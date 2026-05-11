@@ -214,7 +214,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn sum_bfes_pbt() {
         ShadowedFunction::new(SumOfBfes).test()
     }
@@ -225,7 +225,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedFunction::new(SumOfBfes).bench();
     }

@@ -525,12 +525,12 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn rust_shadow() {
         ShadowedFunction::new(DivMod).test();
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn fail_vm_execution_on_divide_by_zero_u32_numerator(numerator: u64) {
         test_assertion_failure(
             &ShadowedFunction::new(DivMod),
@@ -545,7 +545,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedFunction::new(DivMod).bench();
     }

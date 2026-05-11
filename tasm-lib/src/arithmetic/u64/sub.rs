@@ -134,23 +134,23 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn rust_shadow() {
         ShadowedClosure::new(Sub).test();
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn unit_test() {
         Sub.assert_expected_behavior(129, 256);
         Sub.assert_expected_behavior(1, 1 << 32);
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn property_test(subtrahend: u64, #[strategy(#subtrahend..)] minuend: u64) {
         Sub.assert_expected_behavior(subtrahend, minuend);
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn negative_property_test(
         #[strategy(1_u64..)] subtrahend: u64,
         #[strategy(..#subtrahend)] minuend: u64,
@@ -168,7 +168,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedClosure::new(Sub).bench();
     }

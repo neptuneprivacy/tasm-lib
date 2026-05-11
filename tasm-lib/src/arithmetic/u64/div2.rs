@@ -123,12 +123,12 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn rust_shadow() {
         ShadowedClosure::new(Div2).test();
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn lo_is_not_u32(hi: u32, #[strategy(1_u64 << 32..)] lo: u64) {
         let stack = [Div2.init_stack_for_isolated_run(), bfe_vec![hi, lo]].concat();
 
@@ -140,7 +140,7 @@ mod tests {
         );
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn hi_is_not_u32(#[strategy(1_u64 << 32..)] hi: u64, lo: u32) {
         let stack = [Div2.init_stack_for_isolated_run(), bfe_vec![hi, lo]].concat();
 
@@ -152,7 +152,7 @@ mod tests {
         );
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn div_2_test() {
         let small_args = 0..9;
         let mid_args = (0..9).map(|offset| (1 << 32) + offset);
@@ -169,7 +169,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedClosure::new(Div2).bench();
     }

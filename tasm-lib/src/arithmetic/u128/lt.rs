@@ -108,7 +108,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn lt_u128_standard_test() {
         ShadowedClosure::new(Lt).test()
     }
@@ -118,13 +118,13 @@ mod tests {
         test_rust_equivalence_given_execution_state(&ShadowedClosure::new(Lt), initial_state);
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn lt_u128_unit_test() {
         test_rust_tasm_equivalence(1 << 64, 1 << 32);
         test_rust_tasm_equivalence(1 << 32, 1 << 64);
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn lt_u128_edge_cases_test() {
         let boundary_points = [0, 1 << 32, 1 << 64, 1 << 96, u128::MAX]
             .into_iter()
@@ -137,12 +137,12 @@ mod tests {
         }
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn lt_u128_randomized_test_identical_args(v: u128) {
         test_rust_tasm_equivalence(v, v);
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn lt_u128_randomized_test_identical_top_limbs(left: u128, right: u128) {
         test_rust_tasm_equivalence(left, replace_bottom_n_bits::<32>(left, right));
         test_rust_tasm_equivalence(left, replace_bottom_n_bits::<64>(left, right));
@@ -157,7 +157,7 @@ mod tests {
         ((left >> N) << N) | (right & bottom_bits_mask)
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn bit_replacement_works_as_expected() {
         const fn abcd0xf<const N: u8>() -> u128 {
             replace_bottom_n_bits::<N>(0xaaaa_aaaa_bbbb_bbbb_cccc_cccc_dddd_dddd, u128::MAX)
@@ -176,7 +176,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedClosure::new(Lt).bench()
     }

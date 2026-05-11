@@ -213,13 +213,13 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn rust_shadow() {
         ShadowedFunction::new(MmrVerifyFromMemory).test();
     }
 
     // This will crash the VM because leaf?index is not strictly less than leaf_count
-    #[test]
+    #[macro_rules_attr::apply(test)]
     #[should_panic]
     fn mmra_ap_verify_test_empty() {
         let digest0 = Tip5::hash(&BFieldElement::new(4545));
@@ -228,7 +228,7 @@ mod tests {
         prop_verify_from_memory(&mmr, digest0, leaf_index, vec![], false);
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn mmra_ap_verify_test_one() {
         let digest0 = Tip5::hash(&BFieldElement::new(4545));
         let mut mmr = MmrAccumulator::new_from_leafs(vec![]);
@@ -237,7 +237,7 @@ mod tests {
         prop_verify_from_memory(&mmr, digest0, leaf_index, vec![], true);
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn mmra_ap_verify_test_two() {
         let digest0 = Tip5::hash(&BFieldElement::new(123));
         let digest1 = Tip5::hash(&BFieldElement::new(456));
@@ -253,7 +253,7 @@ mod tests {
         prop_verify_from_memory(&mmr, digest1, leaf_index_1, vec![digest0], true);
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn mmra_ap_verify_test_pbt() {
         let max_size = 19;
 
@@ -305,7 +305,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn mmra_ap_verify_many_leafs() {
         for init_leaf_count in [
             (1u64 << 40) + (1 << 21) + 510,
@@ -419,7 +419,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedFunction::new(MmrVerifyFromMemory).bench();
     }

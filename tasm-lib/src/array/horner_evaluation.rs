@@ -154,7 +154,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn rust_shadow() {
         for n in [0, 1, 4, 20, 587, 1000] {
             ShadowedAccessor::new(HornerEvaluation::new(n)).test();
@@ -167,7 +167,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn bench() {
         for n in [100, 587] {
             ShadowedAccessor::new(HornerEvaluation::new(n)).bench();

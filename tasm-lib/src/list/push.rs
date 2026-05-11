@@ -187,7 +187,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn rust_shadow() {
         for ty in [
             DataType::Bool,
@@ -202,7 +202,7 @@ mod tests {
     }
 
     /// See similar test for [`Get`] for an explanation.
-    #[proptest(cases = 100)]
+    #[macro_rules_attr::apply(proptest(cases = 100))]
     fn too_large_lists_crash_vm(
         #[strategy(1_u64 << 29..1 << 32)] list_length: u64,
         #[strategy(arb())] list_pointer: BFieldElement,
@@ -233,7 +233,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedFunction::new(Push::new(DataType::Digest));
     }

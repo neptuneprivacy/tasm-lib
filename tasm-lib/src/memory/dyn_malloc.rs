@@ -37,9 +37,7 @@ impl DynMalloc {
     pub fn memory_region() -> MemoryRegion {
         MemoryRegion::new(
             DYN_MALLOC_FIRST_ADDRESS,
-            (NUM_ALLOCATABLE_PAGES * DYN_MALLOC_PAGE_SIZE)
-                .try_into()
-                .unwrap(),
+            NUM_ALLOCATABLE_PAGES * DYN_MALLOC_PAGE_SIZE,
         )
     }
 }
@@ -190,17 +188,17 @@ pub mod tests {
     use crate::test_helpers::negative_test;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn expected_address_chosen_for_dyn_malloc() {
         assert_eq!(bfe!(-1), DYN_MALLOC_ADDRESS);
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn rust_shadow() {
         ShadowedFunction::new(DynMalloc).test();
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn disallow_allocation_outside_of_region_unit_test() {
         fn negative_prop_disallow_allocation_outside_of_region(memory_page_index: BFieldElement) {
             let snippet = DynMalloc;
@@ -224,7 +222,7 @@ pub mod tests {
         negative_prop_disallow_allocation_outside_of_region(bfe!(u32::MAX));
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn disallow_allocation_if_page_counter_is_not_a_u32(
         #[strategy(arb())]
         #[filter(#address.value() > u64::from(u32::MAX))]
@@ -297,7 +295,7 @@ pub mod tests {
         }
     }
 
-    #[proptest(cases = 20)]
+    #[macro_rules_attr::apply(proptest(cases = 20))]
     fn dynamic_allocator_can_be_called_multiple_times(
         #[strategy(0_usize..1_000)] num_calls: usize,
     ) {
@@ -311,7 +309,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedFunction::new(DynMalloc).bench();
     }

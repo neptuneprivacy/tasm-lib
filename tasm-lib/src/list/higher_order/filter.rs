@@ -323,7 +323,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn test_with_raw_function_lsb_on_bfe() {
         let rawcode = RawCode::new(
             triton_asm!(
@@ -345,7 +345,7 @@ mod tests {
         .test();
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn test_with_raw_function_lsb_on_xfe() {
         let rawcode = RawCode::new(
             triton_asm!(
@@ -374,7 +374,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedFunction::new(Filter {
             f: InnerFunction::BasicSnippet(Box::new(TestHashXFieldElementLsb)),

@@ -145,7 +145,7 @@ mod tests {
     use crate::test_prelude::*;
     use crate::verifier::vm_proof_iter::shared::vm_proof_iter_struct::VmProofIter;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn vm_proof_iter_new_pbt() {
         ShadowedFunction::new(New).test()
     }

@@ -227,12 +227,12 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn rust_shadow() {
         ShadowedProcedure::new(MmrVerifyFromSecretInLeafIndexOnStack).test();
     }
 
-    #[proptest(cases = 32)]
+    #[macro_rules_attr::apply(proptest(cases = 32))]
     fn negative_test_bad_leaf_index(
         #[strategy(0_u64..1 << 62)] leaf_count: u64,
         #[strategy(0_u64..#leaf_count)] real_leaf_index: u64,
@@ -278,7 +278,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedProcedure::new(MmrVerifyFromSecretInLeafIndexOnStack).bench();
     }

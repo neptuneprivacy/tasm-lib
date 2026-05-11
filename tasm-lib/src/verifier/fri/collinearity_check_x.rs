@@ -127,7 +127,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn test() {
         ShadowedFunction::new(GetCollinearityCheckX).test();
     }
@@ -138,7 +138,7 @@ mod bench {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn bench() {
         ShadowedFunction::new(GetCollinearityCheckX).bench();
     }

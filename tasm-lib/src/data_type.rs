@@ -478,7 +478,7 @@ mod tests {
         }
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn push_to_stack_leaves_value_on_top_of_stack(#[strategy(arb())] literal: Literal) {
         let code = triton_asm!(
             {&literal.push_to_stack_code()}
@@ -495,7 +495,7 @@ mod tests {
         assert_eq!(literal, read);
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn static_lengths_match_up_for_vectors() {
         assert_eq!(
             <Vec<XFieldElement>>::static_length(),
@@ -503,7 +503,7 @@ mod tests {
         );
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn static_lengths_match_up_for_array_with_static_length_data_type() {
         assert_eq!(
             <[BFieldElement; 42]>::static_length(),
@@ -515,7 +515,7 @@ mod tests {
         );
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn static_lengths_match_up_for_array_with_dynamic_length_data_type() {
         assert_eq!(
             <[Vec<BFieldElement>; 42]>::static_length(),
@@ -527,7 +527,7 @@ mod tests {
         );
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn static_lengths_match_up_for_tuple_with_only_static_length_types() {
         assert_eq!(
             <(XFieldElement, BFieldElement)>::static_length(),
@@ -535,7 +535,7 @@ mod tests {
         );
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn static_lengths_match_up_for_tuple_with_dynamic_length_types() {
         assert_eq!(
             <(XFieldElement, Vec<BFieldElement>)>::static_length(),
@@ -544,12 +544,12 @@ mod tests {
         );
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn static_length_of_void_pointer_is_unknown() {
         assert!(DataType::VoidPointer.static_length().is_none());
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn static_lengths_match_up_for_struct_with_only_static_length_types() {
         #[derive(Debug, Clone, BFieldCodec)]
         struct StructTyStatic {
@@ -570,7 +570,7 @@ mod tests {
         );
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn static_lengths_match_up_for_struct_with_dynamic_length_types() {
         #[derive(Debug, Clone, BFieldCodec)]
         struct StructTyDyn {
@@ -591,20 +591,20 @@ mod tests {
         );
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn random_list_of_lists_can_be_generated() {
         let mut rng = StdRng::seed_from_u64(5950175350772851878);
         let element_type = DataType::List(Box::new(DataType::Digest));
         let _list = element_type.random_list(&mut rng, 10);
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn i128_sizes() {
         assert_eq!(4, DataType::I128.stack_size());
         assert_eq!(Some(4), DataType::I128.static_length());
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn non_negative_i128s_encode_like_u128s_prop(
         #[strategy(arb())]
         #[filter(#as_i128 >= 0i128)]
@@ -617,7 +617,7 @@ mod tests {
         );
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn i128_literals_prop(val: i128) {
         let program = Literal::I128(val).push_to_stack_code();
         let program = triton_program!(
@@ -632,7 +632,7 @@ mod tests {
         assert_eq!(val, popped);
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn random_list_conforms_to_bfield_codec(#[strategy(..255_usize)] len: usize, seed: u64) {
         let mut rng = StdRng::seed_from_u64(seed);
         let element_type = DataType::Digest;
@@ -640,7 +640,7 @@ mod tests {
         prop_assert!(<Vec<Digest>>::decode(&list).is_ok());
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn random_list_of_lists_conforms_to_bfield_codec(
         #[strategy(..255_usize)] len: usize,
         seed: u64,
@@ -651,7 +651,7 @@ mod tests {
         prop_assert!(<Vec<Vec<Digest>>>::decode(&list).is_ok());
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn random_array_conforms_to_bfield_codec(seed: u64) {
         const LEN: usize = 42;
 
@@ -664,7 +664,7 @@ mod tests {
         prop_assert!(<[Digest; LEN]>::decode(&array).is_ok());
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn random_array_of_arrays_conforms_to_bfield_codec(seed: u64) {
         const INNER_LEN: usize = 42;
         const OUTER_LEN: usize = 13;
@@ -748,13 +748,13 @@ mod compare_literals {
     // stack size > 1
     comparison_snippet!(CompareDigests for tasm_ty Digest and rust_ty Digest);
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn test() {
         ShadowedClosure::new(CompareBfes).test();
         ShadowedClosure::new(CompareDigests).test();
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn bench() {
         ShadowedClosure::new(CompareBfes).bench();
         ShadowedClosure::new(CompareDigests).bench();

@@ -128,12 +128,12 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn rust_shadow() {
         ShadowedClosure::new(ToThePowerOfPowerOf2).test()
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn compare_to_generic_pow_u32() {
         let base = rand::random();
         for log_2_exponent in 0..32 {
@@ -172,7 +172,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedClosure::new(ToThePowerOfPowerOf2).bench();
     }

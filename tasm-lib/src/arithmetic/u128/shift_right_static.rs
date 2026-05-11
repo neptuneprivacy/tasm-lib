@@ -103,7 +103,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn rust_shadow() {
         macro_rules! test_shift_right_static {
             ($($i:expr),*$(,)?) => {
@@ -118,7 +118,7 @@ mod tests {
         test_shift_right_static!(32);
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     #[should_panic]
     fn shift_beyond_limit() {
         ShadowedClosure::new(ShiftRightStatic::<33>).test();
@@ -130,7 +130,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedClosure::new(ShiftRightStatic::<5>).bench();
     }

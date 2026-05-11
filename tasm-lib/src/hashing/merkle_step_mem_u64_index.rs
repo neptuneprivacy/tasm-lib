@@ -142,7 +142,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn unit() {
         ShadowedReadOnlyAlgorithm::new(MerkleStepMemU64Index).test();
     }
@@ -153,7 +153,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedReadOnlyAlgorithm::new(MerkleStepMemU64Index).bench();
     }

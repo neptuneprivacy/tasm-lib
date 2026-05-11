@@ -182,7 +182,7 @@ mod tests {
     use crate::rust_shadowing_helper_functions::array::insert_as_array;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn zerofiers_inverse_pbt() {
         let mem_address_if_first_static_malloc =
             -BFieldElement::new(ZerofiersInverse::array_size() as u64) - BFieldElement::one();

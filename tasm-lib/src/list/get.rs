@@ -116,13 +116,10 @@ impl BasicSnippet for Get {
 
 #[cfg(test)]
 pub(crate) mod tests {
-    use triton_vm::error::OpStackError::FailedU32Conversion;
-
     use super::*;
     use crate::U32_TO_USIZE_ERR;
     use crate::rust_shadowing_helper_functions::list::insert_random_list;
     use crate::rust_shadowing_helper_functions::list::list_get;
-    use crate::test_helpers::negative_test;
     use crate::test_prelude::*;
 
     impl Get {
@@ -188,17 +185,17 @@ pub(crate) mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn rust_shadow() {
         for ty in [DataType::Bfe, DataType::Digest, DataType::I128] {
             ShadowedAccessor::new(Get::new(ty)).test();
         }
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn out_of_bounds_access_crashes_vm(
         #[strategy(0_usize..=1_000)] list_length: usize,
-        #[strategy(#list_length..1 << 32)] index: usize,
+        #[strategy(#list_length..=u32::MAX.try_into().unwrap())] index: usize,
         #[strategy(arb())] list_pointer: BFieldElement,
     ) {
         let get = Get::new(DataType::Bfe);
@@ -210,16 +207,20 @@ pub(crate) mod tests {
         );
     }
 
-    #[proptest]
+    // Don't test on `wasm32`: too large indices cannot be represented there.
+    #[test_strategy::proptest]
+    #[cfg(not(target_arch = "wasm32"))]
     fn too_large_indices_crash_vm(
         #[strategy(1_usize << 32..)] index: usize,
         #[strategy(arb())] list_pointer: BFieldElement,
     ) {
+        use triton_vm::error::OpStackError::FailedU32Conversion;
+
         let list_length = 0;
         let get = Get::new(DataType::Bfe);
         let initial_state = get.set_up_initial_state(list_length, index, list_pointer);
         let expected_error = InstructionError::OpStackError(FailedU32Conversion(bfe!(index)));
-        negative_test(
+        crate::test_helpers::negative_test(
             &ShadowedAccessor::new(get),
             initial_state.into(),
             &[expected_error],
@@ -238,7 +239,7 @@ pub(crate) mod tests {
     /// element index must be at most [u32::MAX].
     ///
     /// [page size]: crate::memory::dyn_malloc::DYN_MALLOC_PAGE_SIZE
-    #[proptest(cases = 100)]
+    #[macro_rules_attr::apply(proptest(cases = 100))]
     fn too_large_lists_crash_vm(
         #[strategy(1_u64 << 22..1 << 32)] list_length: u64,
         #[strategy((1 << 22) - 1..#list_length)] index: u64,
@@ -269,7 +270,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedAccessor::new(Get::new(DataType::Digest)).bench();
     }

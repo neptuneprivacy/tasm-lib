@@ -214,7 +214,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn new_challenge_empty_input_output_pbt() {
         const NUM_OF_CLAIM_DERIVED_CHALLENGES: usize = 4;
         ShadowedProcedure::new(NewEmptyInputAndOutput {
@@ -234,7 +234,7 @@ mod benches {
     use crate::test_prelude::*;
     use crate::verifier::challenges::shared;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         const NUM_OF_CLAIM_DERIVED_CHALLENGES: usize = 4;
         ShadowedProcedure::new(NewEmptyInputAndOutput {

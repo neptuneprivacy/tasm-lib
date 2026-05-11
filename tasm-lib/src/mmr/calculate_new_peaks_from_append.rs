@@ -212,7 +212,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn rust_shadow() {
         ShadowedFunction::new(CalculateNewPeaksFromAppend).test();
     }
@@ -223,7 +223,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn calculate_new_peaks_from_append_benchmark() {
         ShadowedFunction::new(CalculateNewPeaksFromAppend).bench();
     }

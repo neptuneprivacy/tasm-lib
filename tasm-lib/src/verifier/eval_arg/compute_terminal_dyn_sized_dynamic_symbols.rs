@@ -255,7 +255,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn eval_compute_terminal_test() {
         ShadowedFunction::new(ComputeTerminalDynSizedDynamicSymbols).test()
     }
@@ -266,7 +266,7 @@ mod bench {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedFunction::new(ComputeTerminalDynSizedDynamicSymbols).bench()
     }

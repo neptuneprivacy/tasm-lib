@@ -235,13 +235,13 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn rust_shadow() {
         let inner_function = InnerFunction::BasicSnippet(Box::new(TestHashXFieldElementLsb));
         ShadowedFunction::new(All::new(inner_function)).test();
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn all_lt_test() {
         const TWO_POW_31: u64 = 1u64 << 31;
         let rawcode = RawCode::new(
@@ -296,7 +296,7 @@ mod tests {
         );
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn test_with_raw_function_lsb_on_bfe() {
         let rawcode = RawCode::new(
             triton_asm!(
@@ -316,7 +316,7 @@ mod tests {
         ShadowedFunction::new(snippet).test();
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn test_with_raw_function_eq_42() {
         let raw_code = RawCode::new(
             triton_asm!(
@@ -332,7 +332,7 @@ mod tests {
         ShadowedFunction::new(snippet).test();
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn test_with_raw_function_lsb_on_xfe() {
         let rawcode = RawCode::new(
             triton_asm!(
@@ -422,7 +422,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         let inner_function = InnerFunction::BasicSnippet(Box::new(TestHashXFieldElementLsb));
         ShadowedFunction::new(All::new(inner_function)).bench();

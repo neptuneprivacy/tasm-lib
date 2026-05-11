@@ -175,22 +175,22 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn absorb_multiple_static_size_0() {
         ShadowedProcedure::new(AbsorbMultipleStaticSize { size: 0 }).test();
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn absorb_multiple_static_size_1() {
         ShadowedProcedure::new(AbsorbMultipleStaticSize { size: 1 }).test();
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn absorb_multiple_static_size_9() {
         ShadowedProcedure::new(AbsorbMultipleStaticSize { size: 9 }).test();
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn absorb_multiple_static_size_small_pbt() {
         for size in 0..30 {
             println!("Testing size {size}");
@@ -198,7 +198,7 @@ mod tests {
         }
     }
 
-    #[proptest(cases = 40)]
+    #[macro_rules_attr::apply(proptest(cases = 40))]
     fn absorb_multiple_static_size_pbt_pbt(#[strategy(arb())] size: u8) {
         ShadowedProcedure::new(AbsorbMultipleStaticSize {
             size: size as usize,
@@ -212,17 +212,17 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn absorb_multiple_static_size_benchmark_102() {
         ShadowedProcedure::new(AbsorbMultipleStaticSize { size: 102 }).bench();
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn absorb_multiple_static_size_benchmark_400() {
         ShadowedProcedure::new(AbsorbMultipleStaticSize { size: 400 }).bench();
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn absorb_multiple_static_size_benchmark_2002() {
         ShadowedProcedure::new(AbsorbMultipleStaticSize { size: 2002 }).bench();
     }

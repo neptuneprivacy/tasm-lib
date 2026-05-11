@@ -1209,13 +1209,13 @@ pub mod tests {
     use crate::execute_test;
     use crate::maybe_write_debuggable_vm_state_to_disk;
     use crate::memory::FIRST_NON_DETERMINISTICALLY_INITIALIZED_MEMORY_ADDRESS;
-    use crate::memory::encode_to_memory;
     use crate::test_helpers::maybe_write_tvm_output_to_disk;
+    use crate::test_prelude::*;
     use crate::verifier::claim::shared::insert_claim_into_static_memory;
     use crate::verifier::master_table::air_constraint_evaluation::an_integral_but_profane_dynamic_memory_layout;
 
     #[ignore = "Used for debugging when comparing two versions of the verifier"]
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn verify_from_stored_proof_output() {
         use std::fs::File;
         let stark = File::open("stark.json").expect("stark file should open read only");
@@ -1253,7 +1253,7 @@ pub mod tests {
         );
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn fail_on_too_big_log2_padded_height() {
         let mut proof_stream = ProofStream::new();
         proof_stream.enqueue(ProofItem::Log2PaddedHeight(32));
@@ -1354,7 +1354,7 @@ pub mod tests {
         (final_tasm_state.cycle_count as usize, inner_padded_height)
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn different_fri_expansion_factors() {
         const FACTORIAL_ARGUMENT: u32 = 3;
 
@@ -1401,17 +1401,17 @@ pub mod tests {
         );
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn verify_tvm_proof_factorial_program_conventional_static_memlayout() {
         verify_tvm_proof_factorial_program_basic_properties(MemoryLayout::conventional_static());
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn verify_tvm_proof_factorial_program_conventional_dynamic_memlayout() {
         verify_tvm_proof_factorial_program_basic_properties(MemoryLayout::conventional_dynamic());
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn verify_tvm_proof_factorial_program_profane_dynamic_memlayout() {
         verify_tvm_proof_factorial_program_basic_properties(MemoryLayout::Dynamic(
             an_integral_but_profane_dynamic_memory_layout(),
@@ -1515,7 +1515,7 @@ pub mod tests {
         (nondeterminism, claim)
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn verify_two_proofs() {
         #[derive(Debug, Clone, BFieldCodec, TasmObject)]
         struct TwoProofs {
@@ -1653,15 +1653,14 @@ mod benches {
     use super::*;
     use crate::generate_full_profile;
     use crate::linker::execute_bench;
-    use crate::memory::encode_to_memory;
-    use crate::snippet_bencher::BenchmarkCase;
     use crate::snippet_bencher::NamedBenchmarkResult;
     use crate::snippet_bencher::write_benchmarks;
     use crate::test_helpers::prepend_program_with_stack_setup;
+    use crate::test_prelude::*;
     use crate::verifier::claim::shared::insert_claim_into_static_memory;
 
     #[ignore = "Used for profiling the verification of a proof stored on disk."]
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn profile_from_stored_proof_output() {
         use std::fs::File;
         let stark = File::open("stark.json").expect("stark file should open read only");
@@ -1701,7 +1700,7 @@ mod benches {
         println!("{profile}");
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark_small_default_stark_static_memory() {
         benchmark_verifier(
             3,
@@ -1717,7 +1716,7 @@ mod benches {
         );
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark_small_default_stark_dynamic_memory() {
         benchmark_verifier(
             3,
@@ -1734,7 +1733,7 @@ mod benches {
     }
 
     #[ignore = "Takes a fairly long time. Intended to find optimal FRI expansion factor."]
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn small_benchmark_different_fri_expansion_factors() {
         for log2_of_fri_expansion_factor in 1..=5 {
             let stark = Stark::new(160, log2_of_fri_expansion_factor);
@@ -1746,7 +1745,7 @@ mod benches {
 
     #[ignore = "Takes a very long time. Intended to find optimal FRI expansion factor. Make sure to run
        with `RUSTFLAGS=\"-C opt-level=3 -C debug-assertions=no\"`"]
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn big_benchmark_different_fri_expansion_factors() {
         let mem_layout = MemoryLayout::conventional_static();
         for log2_of_fri_expansion_factor in 2..=3 {
@@ -1759,7 +1758,7 @@ mod benches {
 
     #[ignore = "Intended to generate data about verifier table heights as a function of inner padded
        height. Make sure to run with `RUSTFLAGS=\"-C opt-level=3 -C debug-assertions=no\"`"]
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark_verification_as_a_function_of_inner_padded_height() {
         for (fact_arg, expected_inner_padded_height) in [
             (10, 1 << 8),

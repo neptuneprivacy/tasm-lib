@@ -110,12 +110,12 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn rust_shadow() {
         ShadowedClosure::new(SafeMul).test();
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn overflow_crashes_vm(
         #[strategy(1_u32..)] left: u32,
         #[strategy(u32::MAX / #left..)]
@@ -135,7 +135,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn safe_mul_benchmark() {
         ShadowedClosure::new(SafeMul).bench();
     }

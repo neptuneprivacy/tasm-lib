@@ -64,12 +64,12 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn u32_overflowing_add_pbt() {
         ShadowedClosure::new(OverflowingAdd).test()
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn u32_overflowing_add_unit_test() {
         for (lhs, rhs) in [
             (0, 0),
@@ -102,7 +102,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedClosure::new(OverflowingAdd).bench()
     }

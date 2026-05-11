@@ -157,8 +157,9 @@ mod tests {
     use super::*;
     use crate::empty_stack;
     use crate::execute_test;
+    use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn divide_out_zerofiers_test() {
         let snippet = DivideOutZerofiers;
         let mut seed: [u8; 32] = [0u8; 32];
@@ -336,7 +337,7 @@ mod bench {
     use crate::empty_stack;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn bench_divide_out_zerofiers() {
         ShadowedFunction::new(DivideOutZerofiers).bench();
     }

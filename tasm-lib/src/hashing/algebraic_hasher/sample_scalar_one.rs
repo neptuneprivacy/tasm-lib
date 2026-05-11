@@ -52,7 +52,7 @@ mod tests {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn sample_scalar_one_test() {
         ShadowedProcedure::new(SampleScalarOne).test();
     }

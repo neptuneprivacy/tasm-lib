@@ -216,7 +216,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn primitive_root_of_order_2_pow_32_is_not_a_legal_order() {
         let root = BFieldElement::primitive_root_of_unity(1 << 32).unwrap();
 
@@ -224,7 +224,7 @@ mod tests {
         assert!(BFieldElement::primitive_root_of_unity(root.value()).is_none());
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn all_primitive_roots_are_either_1_or_larger_than_u32_max() {
         for pow in 1..=32 {
             let root = BFieldElement::primitive_root_of_unity(1 << pow)
@@ -236,12 +236,12 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn primitive_root_of_unity_pbt() {
         ShadowedClosure::new(PrimitiveRootOfUnity).test()
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn primitive_root_of_unity_unit_test() {
         for log2_order in 1..=32 {
             let order = 1u64 << log2_order;
@@ -263,7 +263,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn primitive_root_negative_test() {
         let small_non_powers_of_two = (0_u64..100).filter(|x| !x.is_power_of_two());
         let larger_non_powers_of_two = (1_u64..50).map(|x| (1 << 32) - x);
@@ -285,7 +285,7 @@ mod tests {
         }
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn triton_vm_crashes_if_order_lo_is_not_u32(
         #[strategy(1_u8..=32)] log_2_order: u8,
         #[strategy(0..=u32::MAX)]
@@ -311,7 +311,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedClosure::new(PrimitiveRootOfUnity).bench()
     }

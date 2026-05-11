@@ -173,24 +173,24 @@ pub(crate) mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn rust_shadow() {
         ShadowedClosure::new(ShiftLeft).test()
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn edge_cases() {
         for i in 0..64 {
             ShiftLeft.assert_expected_behavior(i, u64::MAX);
         }
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn property_test(arg: u64, #[strategy(0_u32..64)] shift_amount: u32) {
         ShiftLeft.assert_expected_behavior(shift_amount, arg);
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn negative_property_test(arg: u64, #[strategy(64_u32..)] shift_amount: u32) {
         test_assertion_failure(
             &ShadowedClosure::new(ShiftLeft),
@@ -205,7 +205,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedClosure::new(ShiftLeft).bench();
     }

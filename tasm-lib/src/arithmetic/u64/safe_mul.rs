@@ -157,12 +157,12 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn rust_shadow() {
         ShadowedClosure::new(SafeMul).test();
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn overflow_tests() {
         let failure_conditions = [
             (1 << 32, 1 << 32, 100),             // (left_hi · right_hi) != 0
@@ -185,7 +185,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedClosure::new(SafeMul).bench();
     }

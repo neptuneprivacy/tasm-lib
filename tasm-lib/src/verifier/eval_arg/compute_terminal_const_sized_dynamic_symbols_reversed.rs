@@ -198,42 +198,42 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn eval_compute_terminal_test_rev_const_sized_1() {
         ShadowedFunction::new(ComputeTerminalConstSizedDynamicSymbolsReversed::<1>).test()
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn eval_compute_terminal_test_rev_const_sized_2() {
         ShadowedFunction::new(ComputeTerminalConstSizedDynamicSymbolsReversed::<2>).test()
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn eval_compute_terminal_test_rev_const_sized_3() {
         ShadowedFunction::new(ComputeTerminalConstSizedDynamicSymbolsReversed::<3>).test()
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn eval_compute_terminal_test_rev_const_sized_4() {
         ShadowedFunction::new(ComputeTerminalConstSizedDynamicSymbolsReversed::<4>).test()
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn eval_compute_terminal_test_rev_const_sized_5() {
         ShadowedFunction::new(ComputeTerminalConstSizedDynamicSymbolsReversed::<5>).test()
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn eval_compute_terminal_test_rev_const_sized_34() {
         ShadowedFunction::new(ComputeTerminalConstSizedDynamicSymbolsReversed::<34>).test()
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn eval_compute_terminal_test_rev_const_sized_64() {
         ShadowedFunction::new(ComputeTerminalConstSizedDynamicSymbolsReversed::<64>).test()
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn eval_compute_terminal_test_rev_const_sized_256() {
         ShadowedFunction::new(ComputeTerminalConstSizedDynamicSymbolsReversed::<256>).test()
     }
@@ -244,7 +244,7 @@ mod bench {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn bench_const_sized_terminal_calc_rev_5() {
         // What's the cost if input is a digest? Does not include code to move digest into
         // memory as an array.
@@ -252,17 +252,17 @@ mod bench {
             .bench()
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn bench_const_sized_terminal_calc_rev_30() {
         ShadowedFunction::new(ComputeTerminalConstSizedDynamicSymbolsReversed::<30>).bench()
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn bench_const_sized_terminal_calc_rev_100() {
         ShadowedFunction::new(ComputeTerminalConstSizedDynamicSymbolsReversed::<100>).bench()
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn bench_const_sized_terminal_calc_rev_256() {
         ShadowedFunction::new(ComputeTerminalConstSizedDynamicSymbolsReversed::<256>).bench()
     }

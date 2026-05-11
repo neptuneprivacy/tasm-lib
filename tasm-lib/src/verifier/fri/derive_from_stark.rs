@@ -118,7 +118,7 @@ mod tests {
     use crate::test_prelude::*;
     use crate::verifier::fri::verify::FriVerify;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn fri_param_derivation_default_stark_pbt() {
         ShadowedFunction::new(DeriveFriFromStark {
             stark: Stark::default(),
@@ -126,7 +126,7 @@ mod tests {
         .test();
     }
 
-    #[proptest(cases = 10)]
+    #[macro_rules_attr::apply(proptest(cases = 10))]
     fn fri_param_derivation_pbt_pbt(#[strategy(arb())] stark: Stark) {
         ShadowedFunction::new(DeriveFriFromStark { stark }).test();
     }

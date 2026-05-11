@@ -274,7 +274,7 @@ mod tests {
     #[derive(Debug, Clone, PartialEq, Eq, BFieldCodec, TasmObject, Arbitrary)]
     struct InnerStruct(XFieldElement, u32);
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn test_load_and_decode_from_memory() {
         #[derive(Debug, Clone, PartialEq, Eq, BFieldCodec, TasmObject)]
         struct OuterStruct {
@@ -335,7 +335,7 @@ mod tests {
         use super::*;
         use crate::maybe_write_debuggable_vm_state_to_disk;
 
-        #[test]
+        #[macro_rules_attr::apply(test)]
         fn load_and_decode_struct_with_named_fields_from_memory() {
             #[derive(BFieldCodec, TasmObject, PartialEq, Eq, Clone, Debug, Arbitrary)]
             struct NamedFields {
@@ -513,7 +513,7 @@ mod tests {
             }
         }
 
-        #[test]
+        #[macro_rules_attr::apply(test)]
         fn mess_with_size_indicator_field_getter_named_fields_negative_test() {
             #[derive(BFieldCodec, TasmObject, PartialEq, Eq, Clone, Debug, Arbitrary)]
             struct WithNamedFields {
@@ -563,7 +563,7 @@ mod tests {
             );
         }
 
-        #[test]
+        #[macro_rules_attr::apply(test)]
         fn mess_with_size_indicators_field_and_size_getter_negative_test() {
             const START_OF_OBJ: BFieldElement = BFieldElement::ZERO;
             let random_object = prepare_random_tuple_struct(rand::random());
@@ -599,7 +599,7 @@ mod tests {
             );
         }
 
-        #[test]
+        #[macro_rules_attr::apply(test)]
         fn mess_with_size_indicators_field_getter_negative_test() {
             const START_OF_OBJ: BFieldElement = BFieldElement::ZERO;
             let random_object = prepare_random_tuple_struct(rand::random());
@@ -632,7 +632,7 @@ mod tests {
             );
         }
 
-        #[test]
+        #[macro_rules_attr::apply(test)]
         fn mess_with_size_indicators_size_indicator_validity_check_negative_test() {
             let mut library = Library::default();
             const OBJ_POINTER: BFieldElement = BFieldElement::new(422);
@@ -682,7 +682,7 @@ mod tests {
             }
         }
 
-        #[test]
+        #[macro_rules_attr::apply(test)]
         fn mess_with_size_indicators_checked_size_list_w_dyn_sized_elems_negative_test() {
             #[derive(BFieldCodec, TasmObject, Debug, Clone, Arbitrary)]
             struct ListDynSizedElements {
@@ -737,7 +737,7 @@ mod tests {
             )
         }
 
-        #[test]
+        #[macro_rules_attr::apply(test)]
         fn validate_total_size_statically_sized_struct() {
             #[derive(BFieldCodec, TasmObject, Debug, Clone, Copy)]
             struct StaticallySizedStruct {
@@ -780,7 +780,7 @@ mod tests {
             assert_eq!(expected_stack, actual_stack);
         }
 
-        #[test]
+        #[macro_rules_attr::apply(test)]
         fn load_and_decode_tuple_structs_from_memory() {
             let random_object = prepare_random_tuple_struct(rand::random());
             let random_address: u64 = rand::rng().random_range(0..(1 << 30));
@@ -826,7 +826,7 @@ mod tests {
             assert_eq!(random_object.0.len(), extracted_xfe_count);
         }
 
-        #[test]
+        #[macro_rules_attr::apply(test)]
         fn test_fri_response() {
             let mut rng = rand::rng();
             let num_digests = 50;
@@ -918,7 +918,7 @@ mod tests {
         use crate::neptune::neptune_like_types_for_tests::UpdateWitnessLookalike;
         use crate::twenty_first::util_types::mmr::mmr_accumulator::MmrAccumulator;
 
-        #[test]
+        #[macro_rules_attr::apply(test)]
         fn unit_struct() {
             #[derive(BFieldCodec, TasmObject)]
             struct Empty {}
@@ -969,7 +969,7 @@ mod tests {
             // re-design it.
             macro_rules! one_field_test_case {
                 (fn $test_name:ident for $ty:ident: $f_name:tt $($post_process:tt)*) => {
-                    #[proptest]
+                    #[macro_rules_attr::apply(proptest)]
                     fn $test_name(
                         #[strategy(arb())] foo: $ty,
                         #[strategy(arb())] ptr: BFieldElement,
@@ -1079,7 +1079,7 @@ mod tests {
                     ($f_name_0:tt $($post_process_0:tt)*)
                     ($f_name_1:tt $($post_process_1:tt)*)
                 ) => {
-                    #[proptest]
+                    #[macro_rules_attr::apply(proptest)]
                     fn $test_name(
                         #[strategy(arb())] foo: $ty,
                         #[strategy(arb())] ptr: BFieldElement,
@@ -1125,7 +1125,7 @@ mod tests {
             two_fields_test_case!( fn named_nest_nest for NamedNestNest: (a.len()) (b.len()) );
         }
 
-        #[test]
+        #[macro_rules_attr::apply(test)]
         fn all_static_dynamic_neighbor_combinations() {
             /// A struct where all neighbor combinations of fields with
             /// {static, dynamic}×{static, dynamic} sizes occur.
@@ -1187,7 +1187,7 @@ mod tests {
             assert_eq!(foo, foo_again);
         }
 
-        #[proptest]
+        #[macro_rules_attr::apply(proptest)]
         fn destructure_update_witness(
             #[strategy(arb())] witness: UpdateWitnessLookalike,
             #[strategy(arb())] witness_ptr: BFieldElement,
@@ -1246,7 +1246,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn test_option() {
         let mut rng = rand::rng();
         let n = rng.random_range(0..5);
@@ -1264,7 +1264,7 @@ mod tests {
         assert!(none_decoded.is_none());
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn iter_decoding_too_short_sequence_does_not_panic(
         #[strategy(arb())] object: Vec<Vec<Digest>>,
         num_elements_to_drop: usize,

@@ -301,7 +301,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn rust_shadow() {
         for element_type in [
             DataType::Bfe,
@@ -316,7 +316,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn contains_returns_true_on_contained_value() {
         let snippet = Contains::new(DataType::U64);
         let a_u64_element = bfe_vec![2, 3];
@@ -336,7 +336,7 @@ mod tests {
         );
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn contains_returns_false_on_mirrored_value() {
         let snippet = Contains::new(DataType::U64);
         let a_u64_element = bfe_vec![2, 3];
@@ -362,7 +362,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         for element_type in [DataType::U64, DataType::Digest] {
             ShadowedFunction::new(Contains::new(element_type)).bench();

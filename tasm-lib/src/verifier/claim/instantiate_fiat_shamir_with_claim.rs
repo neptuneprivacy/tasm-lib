@@ -144,7 +144,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn test() {
         ShadowedProcedure::new(InstantiateFiatShamirWithClaim).test();
     }
@@ -155,7 +155,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedProcedure::new(InstantiateFiatShamirWithClaim).bench();
     }

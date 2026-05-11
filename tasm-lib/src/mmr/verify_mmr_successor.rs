@@ -610,12 +610,12 @@ mod tests {
         initial_states
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn unit() {
         ShadowedReadOnlyAlgorithm::new(VerifyMmrSuccessor).test();
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn verify_mmr_successor_negative_test() {
         let all_error_ids = [
             VerifyMmrSuccessor::OLD_HAS_MORE_LEAFS_THAN_NEW_ERROR_ID,
@@ -641,7 +641,7 @@ mod bench {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedReadOnlyAlgorithm::new(VerifyMmrSuccessor).bench();
     }

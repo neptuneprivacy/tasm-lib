@@ -42,6 +42,7 @@ impl BasicSnippet for OwnProgramDigest {
 mod tests {
     use super::*;
     use crate::execute_with_terminal_state;
+    use crate::test_prelude::*;
 
     #[derive(Debug, Clone, Eq, PartialEq)]
     struct ProgramSetup {
@@ -63,7 +64,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn positive_test() {
         let test_setup = test_program();
 

@@ -113,12 +113,12 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn test_shadow() {
         ShadowedFunction::new(NumberOfRounds {}).test()
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn shadow_agrees_with_canon() {
         let mut rng = rand::rng();
         let num_trials = 50;

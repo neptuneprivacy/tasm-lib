@@ -144,17 +144,17 @@ pub(crate) mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn rust_shadow_test() {
         ShadowedClosure::new(Lt).test()
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn unit_test() {
         Lt.assert_expected_lt_behavior(11 * (1 << 32), 15 * (1 << 32));
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn property_test(left: u64, right: u64) {
         Lt.assert_expected_lt_behavior(left, right);
     }
@@ -165,7 +165,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedClosure::new(Lt).bench();
     }

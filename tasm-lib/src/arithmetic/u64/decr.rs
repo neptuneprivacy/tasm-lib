@@ -117,12 +117,12 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn rust_shadow() {
         ShadowedClosure::new(Decr).test();
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn negative_test() {
         test_assertion_failure(
             &ShadowedClosure::new(Decr),
@@ -137,7 +137,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedClosure::new(Decr).bench();
     }

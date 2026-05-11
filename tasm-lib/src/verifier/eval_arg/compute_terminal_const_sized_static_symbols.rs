@@ -98,8 +98,6 @@ impl<const N: usize> BasicSnippet for ComputeTerminalConstSizedStaticSymbols<N> 
 mod tests {
     use num::One;
     use num::Zero;
-    use proptest_arbitrary_interop::arb;
-    use test_strategy::proptest;
     use triton_vm::air::cross_table_argument::CrossTableArg;
     use triton_vm::air::cross_table_argument::EvalArg;
 
@@ -130,7 +128,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn eval_compute_unit_test_1() {
         ShadowedClosure::new(ComputeTerminalConstSizedStaticSymbols::<1> {
             symbols: [BFieldElement::new(77)],
@@ -139,7 +137,7 @@ mod tests {
         .test();
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn eval_compute_unit_test_2() {
         ShadowedClosure::new(ComputeTerminalConstSizedStaticSymbols::<2> {
             symbols: [BFieldElement::new(77), BFieldElement::new(177)],
@@ -148,7 +146,7 @@ mod tests {
         .test();
     }
 
-    #[proptest(cases = 3)]
+    #[macro_rules_attr::apply(proptest(cases = 3))]
     fn eval_compute_terminal_test_1(
         #[strategy(arb())] symbol: BFieldElement,
         #[strategy(arb())] initial: XFieldElement,
@@ -160,7 +158,7 @@ mod tests {
         .test();
     }
 
-    #[proptest(cases = 3)]
+    #[macro_rules_attr::apply(proptest(cases = 3))]
     fn eval_compute_terminal_test_2(
         #[strategy(arb())] symbols: [BFieldElement; 2],
         #[strategy(arb())] initial: XFieldElement,
@@ -169,7 +167,7 @@ mod tests {
             .test();
     }
 
-    #[proptest(cases = 3)]
+    #[macro_rules_attr::apply(proptest(cases = 3))]
     fn eval_compute_terminal_test_3(
         #[strategy(arb())] symbols: [BFieldElement; 3],
         #[strategy(arb())] initial: XFieldElement,
@@ -178,7 +176,7 @@ mod tests {
             .test();
     }
 
-    #[proptest(cases = 3)]
+    #[macro_rules_attr::apply(proptest(cases = 3))]
     fn eval_compute_terminal_test_4(
         #[strategy(arb())] symbols: [BFieldElement; 4],
         #[strategy(arb())] initial: XFieldElement,
@@ -187,7 +185,7 @@ mod tests {
             .test();
     }
 
-    #[proptest(cases = 3)]
+    #[macro_rules_attr::apply(proptest(cases = 3))]
     fn eval_compute_terminal_test_5(
         #[strategy(arb())] symbols: [BFieldElement; 5],
         #[strategy(arb())] initial: XFieldElement,
@@ -196,7 +194,7 @@ mod tests {
             .test();
     }
 
-    #[proptest(cases = 3)]
+    #[macro_rules_attr::apply(proptest(cases = 3))]
     fn eval_compute_terminal_test_256(
         #[strategy(arb())] symbols: [BFieldElement; 256],
         #[strategy(arb())] initial: XFieldElement,
@@ -205,7 +203,7 @@ mod tests {
             .test();
     }
 
-    #[proptest(cases = 3)]
+    #[macro_rules_attr::apply(proptest(cases = 3))]
     fn compare_to_other_implementations_length_1(
         #[strategy(arb())] initial: XFieldElement,
         #[strategy(arb())] challenge: XFieldElement,
@@ -219,7 +217,7 @@ mod tests {
         assert_eq!(stat_res_const_sized, dyn_res_dyn_sized);
     }
 
-    #[proptest(cases = 3)]
+    #[macro_rules_attr::apply(proptest(cases = 3))]
     fn compare_to_other_implementations_length_2(
         #[strategy(arb())] initial: XFieldElement,
         #[strategy(arb())] challenge: XFieldElement,
@@ -233,7 +231,7 @@ mod tests {
         assert_eq!(stat_res_const_sized, dyn_res_dyn_sized);
     }
 
-    #[proptest(cases = 3)]
+    #[macro_rules_attr::apply(proptest(cases = 3))]
     fn compare_to_other_implementations_length_3(
         #[strategy(arb())] initial: XFieldElement,
         #[strategy(arb())] challenge: XFieldElement,
@@ -247,7 +245,7 @@ mod tests {
         assert_eq!(stat_res_const_sized, dyn_res_dyn_sized);
     }
 
-    #[proptest(cases = 3)]
+    #[macro_rules_attr::apply(proptest(cases = 3))]
     fn compare_to_other_implementations_length_4(
         #[strategy(arb())] initial: XFieldElement,
         #[strategy(arb())] challenge: XFieldElement,
@@ -261,7 +259,7 @@ mod tests {
         assert_eq!(stat_res_const_sized, dyn_res_dyn_sized);
     }
 
-    #[proptest(cases = 3)]
+    #[macro_rules_attr::apply(proptest(cases = 3))]
     fn compare_to_other_implementations_length_5(
         #[strategy(arb())] initial: XFieldElement,
         #[strategy(arb())] challenge: XFieldElement,
@@ -275,7 +273,7 @@ mod tests {
         assert_eq!(stat_res_const_sized, dyn_res_dyn_sized);
     }
 
-    #[proptest(cases = 3)]
+    #[macro_rules_attr::apply(proptest(cases = 3))]
     fn compare_to_other_implementations_length_5_initial_is_one(
         #[strategy(arb())] challenge: XFieldElement,
         #[strategy(arb())] symbols: [BFieldElement; 5],
@@ -404,7 +402,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedClosure::new(ComputeTerminalConstSizedStaticSymbols::<256> {
             symbols: bfe_array![100; 256],

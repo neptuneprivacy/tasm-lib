@@ -253,12 +253,12 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn rust_shadow() {
         ShadowedClosure::new(SafeMul).test();
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn overflow_crashes_vm() {
         SafeMul.test_assertion_failure(1 << 127, 1 << 1, &[500]);
         SafeMul.test_assertion_failure(1 << 96, 1 << 32, &[501]);
@@ -282,7 +282,7 @@ mod tests {
         }
     }
 
-    #[proptest(cases = 80)]
+    #[macro_rules_attr::apply(proptest(cases = 80))]
     fn arbitrary_overflow_crashes_vm(
         #[strategy(2_u8..128)] _log_upper_bound: u8,
         #[strategy(2_u128..(1 << #_log_upper_bound))] left: u128,
@@ -291,7 +291,7 @@ mod tests {
         SafeMul.test_assertion_failure(left, right, &[500, 501, 502, 503, 504, 505, 506]);
     }
 
-    #[proptest(cases = 80)]
+    #[macro_rules_attr::apply(proptest(cases = 80))]
     fn marginal_overflow_crashes_vm(
         #[strategy(2_u8..128)] _log_upper_bound: u8,
         #[strategy(2_u128..(1 << #_log_upper_bound))] left: u128,
@@ -300,7 +300,7 @@ mod tests {
         SafeMul.test_assertion_failure(left, right, &[500, 501, 502, 503, 504, 505, 506]);
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn arbitrary_overflow_crashes_vm_u128(
         #[strategy(2_u128..)] left: u128,
         #[strategy(u128::MAX / #left + 1..)] right: u128,
@@ -314,7 +314,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedClosure::new(SafeMul).bench();
     }

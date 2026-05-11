@@ -281,7 +281,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn new_challenges_pbt() {
         ShadowedProcedure::new(NewGenericDynClaim::tvm_challenges(
             conventional_challenges_pointer(),
@@ -296,7 +296,7 @@ mod benches {
     use crate::test_prelude::*;
     use crate::verifier::challenges::shared::conventional_challenges_pointer;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn bench_for_challenges_calc_for_recufier() {
         ShadowedProcedure::new(NewGenericDynClaim::tvm_challenges(
             conventional_challenges_pointer(),

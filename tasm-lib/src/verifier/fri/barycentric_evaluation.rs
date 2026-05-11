@@ -232,7 +232,7 @@ mod tests {
     use crate::rust_shadowing_helper_functions::list::load_list_with_copy_elements;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn barycentric_evaluation_pbt() {
         ShadowedFunction::new(BarycentricEvaluation).test()
     }
@@ -355,7 +355,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn bench_barycentric_evaluation() {
         ShadowedFunction::new(BarycentricEvaluation).bench();
     }

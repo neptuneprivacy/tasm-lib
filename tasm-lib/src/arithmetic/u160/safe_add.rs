@@ -73,12 +73,12 @@ mod tests {
     use crate::arithmetic::u160::u128_to_u160_shl_32_lower_limb_filled;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn rust_shadow() {
         ShadowedClosure::new(SafeAdd).test()
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn overflow_test() {
         for (left, right) in [
             (1 << 127, 1 << 127),
@@ -203,7 +203,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedClosure::new(SafeAdd).bench()
     }

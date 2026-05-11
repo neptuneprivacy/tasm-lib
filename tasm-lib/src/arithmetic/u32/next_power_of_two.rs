@@ -152,12 +152,12 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn next_power_of_two_pbt() {
         ShadowedClosure::new(NextPowerOfTwo).test()
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn npo2_overflow_negative_test() {
         let greater_two_pow_31 = (1..=5).map(|i| (1 << 31) + i);
         let smaller_equal_u32_max = (0..=2).map(|i| u32::MAX - i);
@@ -177,7 +177,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedClosure::new(NextPowerOfTwo).bench()
     }

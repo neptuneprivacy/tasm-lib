@@ -132,7 +132,7 @@ mod tests {
     use crate::rust_shadowing_helper_functions::array::insert_as_array;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn ood_points_pbt() {
         ShadowedFunction::new(OutOfDomainPoints).test();
     }
@@ -205,7 +205,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedFunction::new(OutOfDomainPoints).bench();
     }

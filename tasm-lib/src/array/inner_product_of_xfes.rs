@@ -143,14 +143,14 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn inner_product_of_xfes_pbt() {
         for test_case in (0..20).chain(100..110).map(InnerProductOfXfes::new) {
             ShadowedAccessor::new(test_case).test()
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn inner_product_unit_test() {
         let a = xfe_vec![[3, 0, 0], [5, 0, 0]];
         let b = xfe_vec![[501, 0, 0], [1003, 0, 0]];
@@ -196,7 +196,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedAccessor::new(InnerProductOfXfes::new(100)).bench();
         ShadowedAccessor::new(InnerProductOfXfes::new(200)).bench();

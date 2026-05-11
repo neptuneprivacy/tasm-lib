@@ -137,7 +137,7 @@ pub mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn u64_overflowing_add_pbt() {
         ShadowedClosure::new(OverflowingAdd).test()
     }
@@ -148,7 +148,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedClosure::new(OverflowingAdd).bench()
     }

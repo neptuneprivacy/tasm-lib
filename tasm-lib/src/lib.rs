@@ -14,13 +14,13 @@ extern crate self as tasm_lib;
 
 use std::collections::HashMap;
 use std::io::Write;
-use std::time::SystemTime;
 
 use itertools::Itertools;
 use memory::dyn_malloc;
 use num_traits::Zero;
 use triton_vm::isa::op_stack::NUM_OP_STACK_REGISTERS;
 use triton_vm::prelude::*;
+use web_time::SystemTime;
 
 pub mod arithmetic;
 pub mod array;
@@ -328,11 +328,76 @@ pub fn generate_full_profile(
 /// Feel free to add anything you frequently `use` in a test module.
 #[cfg(test)]
 pub mod test_prelude {
+    /// A crate-specific replacement of the `#[test]` attribute for tests that
+    /// should also be executed on `wasm` targets (which is almost all tests).
+    ///
+    /// If you specifically want to exclude a test from `wasm` targets, use the
+    /// usual `#[test]` attribute instead.
+    ///
+    /// # Usage
+    ///
+    /// ```
+    /// #[macro_rules_attr::apply(test)]
+    /// fn foo() {
+    ///     assert_eq!(4, 2 + 2);
+    /// }
+    /// ```
+    macro_rules! test {
+        ($item:item) => {
+            #[test]
+            #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test::wasm_bindgen_test)]
+            $item
+        };
+    }
+    pub(crate) use test;
+
+    /// A crate-specific replacement of the `#[test_strategy::proptest]`
+    /// attribute for tests that should also be executed on `wasm` targets
+    /// (which is almost all tests).
+    ///
+    /// If you specifically want to exclude a test from `wasm` targets, use the
+    /// usual `#[test_strategy::proptest]` attribute instead.
+    ///
+    /// # Usage
+    ///
+    /// ```
+    /// # use proptest::prop_assert_eq;
+    /// #[macro_rules_attr::apply(proptest)]
+    /// fn foo(#[strategy(0..=42)] x: i32) {
+    ///     prop_assert_eq!(2 * x, x + x);
+    /// }
+    /// ```
+    ///
+    /// If you want to configure the test, use the usual syntax defined by
+    /// [`test_strategy`]:
+    /// ```
+    /// # use proptest::prop_assert_eq;
+    /// #[macro_rules_attr::apply(proptest(cases = 10, max_local_rejects = 5))]
+    /// fn foo(#[strategy(0..=42)] x: i32) {
+    ///     prop_assert_eq!(2 * x, x + x);
+    /// }
+    /// ```
+    macro_rules! proptest {
+        ($item:item $(($($config:tt)*))?) => {
+            #[test_strategy::proptest $(($($config)*))?]
+            #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test::wasm_bindgen_test)]
+            $item
+        };
+    }
+    pub(crate) use proptest;
+
     pub use std::collections::HashMap;
 
     pub use itertools::Itertools;
-    pub use proptest::prelude::*;
-    pub use proptest_arbitrary_interop::arb;
+    pub use proptest::prelude::Just;
+    pub use proptest::prelude::Strategy;
+    pub use proptest::prelude::TestCaseError;
+    pub use proptest::prelude::any;
+    pub use proptest::prelude::prop_assert;
+    pub use proptest::prelude::prop_assert_eq;
+    pub use proptest::prelude::prop_assume;
+    pub use proptest::test_runner::TestCaseResult;
+    pub use proptest_arbitrary_adapter::arb;
     pub use rand::Rng;
     pub use rand::RngCore;
     pub use rand::SeedableRng;
@@ -340,7 +405,7 @@ pub mod test_prelude {
     pub use rand::prelude::IndexedRandom;
     pub use rand::prelude::IteratorRandom;
     pub use rand::rngs::StdRng;
-    pub use test_strategy::proptest;
+    pub use test_strategy::Arbitrary;
 
     pub use crate::InitVmState;
     pub use crate::memory::encode_to_memory;

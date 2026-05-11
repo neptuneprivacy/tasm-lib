@@ -118,7 +118,7 @@ pub mod tests {
     use crate::test_prelude::*;
     use crate::verifier::claim::shared::insert_claim_into_static_memory;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn new_recursive_claim_small_params_pbt() {
         ShadowedProcedure::new(NewRecursive {
             input_size: Digest::LEN,
@@ -127,7 +127,7 @@ pub mod tests {
         .test()
     }
 
-    #[proptest(cases = 10)]
+    #[macro_rules_attr::apply(proptest(cases = 10))]
     fn new_recursive_claim_pbt_pbt(
         #[strategy(0_usize..200)] output_size: usize,
         #[strategy(0_usize..200)] input_size: usize,

@@ -68,7 +68,7 @@ impl Default for Library {
 
 impl Library {
     pub fn kmalloc_memory_region() -> MemoryRegion {
-        MemoryRegion::new(STATIC_MEMORY_LAST_ADDRESS, 1usize << 32)
+        MemoryRegion::new(STATIC_MEMORY_LAST_ADDRESS, 1 << 32)
     }
 
     pub fn new() -> Self {
@@ -301,14 +301,14 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn library_includes() {
         ShadowedClosure::new(DummyTestSnippetA).test();
         ShadowedClosure::new(DummyTestSnippetB).test();
         ShadowedClosure::new(DummyTestSnippetC).test();
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn get_all_snippet_names_test_a() {
         let mut lib = Library::new();
         lib.import(Box::new(DummyTestSnippetA));
@@ -322,7 +322,7 @@ mod tests {
         );
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn get_all_snippet_names_test_b() {
         let mut lib = Library::new();
         lib.import(Box::new(DummyTestSnippetB));
@@ -332,7 +332,7 @@ mod tests {
         );
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn all_imports_as_instruction_lists() {
         let mut lib = Library::new();
         lib.import(Box::new(DummyTestSnippetA));
@@ -341,7 +341,7 @@ mod tests {
         let _ret = lib.all_imports();
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn program_is_deterministic() {
         // Ensure that a generated program is deterministic, by checking that the imports
         // are always sorted the same way.
@@ -380,7 +380,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn kmalloc_test() {
         const MINUS_TWO: BFieldElement = BFieldElement::new(BFieldElement::MAX - 1);
         let mut lib = Library::new();

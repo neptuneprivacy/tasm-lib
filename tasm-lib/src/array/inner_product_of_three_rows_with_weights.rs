@@ -169,21 +169,21 @@ mod tests {
     use crate::rust_shadowing_helper_functions::array::insert_random_array;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn three_rows_tvm_parameters_xfe_main_test() {
         let snippet =
             InnerProductOfThreeRowsWithWeights::triton_vm_parameters(MainElementType::Xfe);
         ShadowedAccessor::new(snippet).test();
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn three_rows_tvm_parameters_bfe_main_test() {
         let snippet =
             InnerProductOfThreeRowsWithWeights::triton_vm_parameters(MainElementType::Bfe);
         ShadowedAccessor::new(snippet).test();
     }
 
-    #[proptest(cases = 10)]
+    #[macro_rules_attr::apply(proptest(cases = 10))]
     fn main_or_aux_column_count_can_be_zero(#[strategy(0_usize..500)] len: usize) {
         for elt_ty in [MainElementType::Bfe, MainElementType::Xfe] {
             ShadowedAccessor::new(InnerProductOfThreeRowsWithWeights::new(0, elt_ty, len)).test();
@@ -191,7 +191,7 @@ mod tests {
         }
     }
 
-    #[proptest(cases = 6)]
+    #[macro_rules_attr::apply(proptest(cases = 6))]
     fn three_rows_pbt_pbt(
         #[strategy(arb())] main_element_type: MainElementType,
         #[strategy(0_usize..500)] main_length: usize,
@@ -279,7 +279,7 @@ mod benches {
 
     /// Benchmark the calculation of the (in-domain) current rows that happen in the
     /// main-loop, where all revealed FRI values are verified.
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn bench_current_tvm_bfe() {
         let snippet =
             InnerProductOfThreeRowsWithWeights::triton_vm_parameters(MainElementType::Bfe);
@@ -287,7 +287,7 @@ mod benches {
     }
 
     /// Benchmark the calculation of the out-of-domain current and next row values.
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn bench_current_tvm_xfe() {
         let snippet =
             InnerProductOfThreeRowsWithWeights::triton_vm_parameters(MainElementType::Xfe);

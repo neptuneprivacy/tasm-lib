@@ -314,7 +314,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn test() {
         ShadowedFunction::new(GetSwbfIndices {
             window_size: 1048576,
@@ -329,7 +329,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedFunction::new(GetSwbfIndices {
             window_size: 1048576,

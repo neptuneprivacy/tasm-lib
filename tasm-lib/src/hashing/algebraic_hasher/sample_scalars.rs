@@ -190,7 +190,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn test() {
         ShadowedProcedure::new(SampleScalars).test();
     }
@@ -198,7 +198,7 @@ mod tests {
     /// This is a regression test that verifies that this implementation of `sample_scalars`
     /// agrees with Tip5's version from twenty-first. For the bugfix, see:
     /// <https://github.com/Neptune-Crypto/twenty-first/commit/e708b305>
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn verify_agreement_with_tip5_sample_scalars() {
         let empty_sponge = Tip5::init();
         let mut non_empty_sponge = Tip5::init();
@@ -246,7 +246,7 @@ mod bench {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedProcedure::new(SampleScalars).bench();
     }

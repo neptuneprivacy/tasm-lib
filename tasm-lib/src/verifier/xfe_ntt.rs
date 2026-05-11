@@ -514,7 +514,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn test() {
         let function = ShadowedFunction::new(XfeNtt);
         let num_states = 5;
@@ -577,7 +577,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedFunction::new(XfeNtt).bench();
     }

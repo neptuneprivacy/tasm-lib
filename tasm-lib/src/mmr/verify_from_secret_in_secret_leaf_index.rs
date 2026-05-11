@@ -116,14 +116,14 @@ mod tests {
     use crate::test_helpers::test_rust_equivalence_given_complete_state;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn prop() {
         for _ in 0..10 {
             ShadowedProcedure::new(MmrVerifyFromSecretInSecretLeafIndex).test();
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn mmra_ap_verify_test_one() {
         let digest0 = Tip5::hash(&BFieldElement::new(4545));
         let (mmra, _mps) = mmra_with_mps(1u64, vec![(0, digest0)]);
@@ -135,7 +135,7 @@ mod tests {
         );
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn mmra_ap_verify_test_two() {
         let digest0 = Tip5::hash(&BFieldElement::new(123));
         let digest1 = Tip5::hash(&BFieldElement::new(456));
@@ -160,7 +160,7 @@ mod tests {
         );
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn mmra_ap_verify_test_pbt() {
         let max_size = 19;
         let snippet = MmrVerifyFromSecretInSecretLeafIndex;
@@ -201,7 +201,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn mmra_ap_verify_many_leafs() {
         for init_leaf_count in [
             (1u64 << 40) + (1 << 21) + 510,
@@ -534,7 +534,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedProcedure::new(MmrVerifyFromSecretInSecretLeafIndex).bench();
     }

@@ -183,12 +183,12 @@ pub mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn mod_pow_u32_xfe_pbt() {
         ShadowedClosure::new(XfeModPowU32).test()
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn verify_crash_if_exponent_not_u32() {
         let bfe_14 = BFieldElement::new(14);
         let xfe_14 = XFieldElement::new([bfe_14, bfe_14, bfe_14]);
@@ -224,7 +224,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedClosure::new(XfeModPowU32).bench();
     }

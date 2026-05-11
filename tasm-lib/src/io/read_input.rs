@@ -90,7 +90,7 @@ mod tests {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn test() {
         for data_type in DataType::big_random_generatable_type_collection() {
             ShadowedProcedure::new(ReadInput {
@@ -112,7 +112,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedProcedure::new(ReadInput {
             data_type: DataType::Digest,

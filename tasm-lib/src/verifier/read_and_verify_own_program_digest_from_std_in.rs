@@ -45,6 +45,7 @@ impl BasicSnippet for ReadAndVerifyOwnProgramDigestFromStdIn {
 mod tests {
     use super::*;
     use crate::execute_with_terminal_state;
+    use crate::test_prelude::*;
 
     #[derive(Debug, Clone, Eq, PartialEq)]
     struct ProgramSetup {
@@ -73,7 +74,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn positive_test() {
         let test_setup = test_program();
 
@@ -96,7 +97,7 @@ mod tests {
         assert!(vm_end_state.jump_stack.is_empty());
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn negative_test_expect_assertion_fail_due_to_bad_std_in() {
         let test_setup = test_program();
 

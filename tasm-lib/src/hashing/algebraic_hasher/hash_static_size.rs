@@ -58,7 +58,7 @@ mod tests {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn hash_static_size_small_pbt() {
         for size in 0..20 {
             println!("Testing size {size}");
@@ -66,7 +66,7 @@ mod tests {
         }
     }
 
-    #[proptest(cases = 50)]
+    #[macro_rules_attr::apply(proptest(cases = 50))]
     fn hash_static_size_pbt_pbt(#[strategy(arb())] size: u8) {
         ShadowedProcedure::new(HashStaticSize {
             size: size as usize,
@@ -142,25 +142,25 @@ mod benches {
     use crate::test_prelude::*;
 
     // Picked to be the size of a main table row at time of writing
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn hash_var_lenstatic_size_benchmark_356() {
         ShadowedProcedure::new(HashStaticSize { size: 356 }).bench();
     }
 
     // Picked to be the size of a auxiliary table row at time of writing
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn hash_var_lenstatic_size_benchmark_249() {
         ShadowedProcedure::new(HashStaticSize { size: 249 }).bench();
     }
 
     // Picked to be the size of a quotient table row at time of writing
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn hash_var_lenstatic_size_benchmark_12() {
         ShadowedProcedure::new(HashStaticSize { size: 12 }).bench();
     }
 
     // Picked to compare with same size of benchmark for `hash_varlen` at time of writing
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn hash_var_lenstatic_size_benchmark_1000() {
         ShadowedProcedure::new(HashStaticSize { size: 1000 }).bench();
     }

@@ -161,13 +161,13 @@ mod tests {
 
     macro_rules! test_case {
         (fn $test_name:ident for $t:ty) => {
-            #[test]
+            #[macro_rules_attr::apply(test)]
             fn $test_name() {
                 ShadowedAccessor::new(VerifyNdSiIntegrity::<$t>::default()).test();
             }
         };
         (fn $test_name:ident for new type $t:ty: $($type_declaration:tt)*) => {
-            #[test]
+            #[macro_rules_attr::apply(test)]
             fn $test_name() {
                 #[derive(Debug, Clone, TasmObject, BFieldCodec, Arbitrary)]
                 $($type_declaration)*
@@ -190,7 +190,7 @@ mod tests {
 
         test_case! { fn test_pbt_simple_struct for TestStruct }
 
-        #[test]
+        #[macro_rules_attr::apply(test)]
         fn struct_not_contained_in_nd_region() {
             let snippet = VerifyNdSiIntegrity::<TestStruct>::default();
 
@@ -209,7 +209,7 @@ mod tests {
             )
         }
 
-        #[test]
+        #[macro_rules_attr::apply(test)]
         fn struct_does_not_start_in_nd_region() {
             let snippet = VerifyNdSiIntegrity::<TestStruct>::default();
 
@@ -225,7 +225,7 @@ mod tests {
             )
         }
 
-        #[test]
+        #[macro_rules_attr::apply(test)]
         fn lie_about_digest_vec_size() {
             let snippet = VerifyNdSiIntegrity::<TestStruct>::default();
 
@@ -240,7 +240,7 @@ mod tests {
             test_assertion_failure(&ShadowedAccessor::new(snippet), init_state.into(), &[181])
         }
 
-        #[test]
+        #[macro_rules_attr::apply(test)]
         fn lie_about_digest_vec_len() {
             let snippet = VerifyNdSiIntegrity::<TestStruct>::default();
 
@@ -277,7 +277,7 @@ mod tests {
         test_case! {fn test_option_stat_sized_elem for StatSizedPayload }
         test_case! {fn test_option_dyn_sized_elem for DynSizedPayload }
 
-        #[test]
+        #[macro_rules_attr::apply(test)]
         fn lie_about_option_payload_field_size() {
             let snippet = VerifyNdSiIntegrity::<DynSizedPayload>::default();
 
@@ -301,7 +301,7 @@ mod tests {
             );
         }
 
-        #[test]
+        #[macro_rules_attr::apply(test)]
         fn illegal_discriminant_value_for_option() {
             let snippet = VerifyNdSiIntegrity::<DynSizedPayload>::default();
 
@@ -320,7 +320,7 @@ mod tests {
             );
         }
 
-        #[test]
+        #[macro_rules_attr::apply(test)]
         fn lie_about_option_payload_size() {
             let snippet = VerifyNdSiIntegrity::<DynSizedPayload>::default();
 
@@ -406,12 +406,12 @@ mod benches {
     use crate::neptune::neptune_like_types_for_tests::TransactionKernelLookalike;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn bench_proof_collection_lookalike() {
         ShadowedAccessor::new(VerifyNdSiIntegrity::<ProofCollectionLookalike>::default()).bench();
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn bench_transaction_kernel_lookalike() {
         ShadowedAccessor::new(VerifyNdSiIntegrity::<TransactionKernelLookalike>::default()).bench();
     }

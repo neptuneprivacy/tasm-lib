@@ -1154,7 +1154,6 @@ mod tests {
     use num_traits::Zero;
     use proptest::collection::vec;
     use rayon::prelude::*;
-    use test_strategy::proptest;
     use triton_vm::proof_item::ProofItem;
     use twenty_first::math::ntt::ntt;
     use twenty_first::util_types::sponge::Sponge;
@@ -1344,7 +1343,7 @@ mod tests {
         }
     }
 
-    #[derive(Debug, Clone, test_strategy::Arbitrary)]
+    #[derive(Debug, Clone, Arbitrary)]
     struct ArbitraryFriVerify {
         #[strategy(arb())]
         #[filter(!#offset.is_zero())]
@@ -1373,7 +1372,7 @@ mod tests {
         }
     }
 
-    #[derive(Debug, Clone, test_strategy::Arbitrary)]
+    #[derive(Debug, Clone, Arbitrary)]
     pub(super) struct TestCase {
         #[strategy(any::<ArbitraryFriVerify>().prop_map(|x| x.fri_verify()))]
         pub(super) fri_verify: FriVerify,
@@ -1481,7 +1480,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn assert_behavioral_equivalence_of_tiny_fri_instance() {
         assert_behavioral_equivalence_of_fris(TestCase::tiny_case());
     }
@@ -1532,7 +1531,7 @@ mod tests {
         assert_eq!(rust_object, tasm_object);
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn fri_derived_params_match(test_case: ArbitraryFriVerify) {
         let fri_verify = test_case.fri_verify();
         let fri = fri_verify.to_fri();
@@ -1548,7 +1547,7 @@ mod tests {
         );
     }
 
-    #[proptest(cases = 10)]
+    #[macro_rules_attr::apply(proptest(cases = 10))]
     fn test_inner_verify(test_case: TestCase) {
         let fri = test_case.fri();
         let mut vm_proof_iter = test_case.proof_stream();
@@ -1561,17 +1560,17 @@ mod tests {
         prop_assert!(verify_result.is_ok(), "FRI verify error: {verify_result:?}");
     }
 
-    #[proptest(cases = 3)]
+    #[macro_rules_attr::apply(proptest(cases = 3))]
     fn test_shadow_prop(test_case: TestCase) {
         assert_behavioral_equivalence_of_fris(test_case);
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn test_shadow_small() {
         assert_behavioral_equivalence_of_fris(TestCase::small_case());
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn modifying_any_element_in_vm_proof_iter_of_small_test_case_causes_verification_failure() {
         let test_case = TestCase::small_case();
         let fri_verify = test_case.fri_verify;
@@ -1607,7 +1606,7 @@ mod tests {
         });
     }
 
-    #[proptest(cases = 2)]
+    #[macro_rules_attr::apply(proptest(cases = 2))]
     fn assert_nondeterministic_digests_are_all_used(test_case: TestCase) {
         let ProcedureInitialState {
             stack: initial_stack,
@@ -1648,7 +1647,7 @@ mod bench {
     use crate::test_prelude::*;
     use crate::verifier::fri::verify::tests::TestCase;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn bench() {
         let expansion_factor = 4;
         let domain_length = 1 << 10;
@@ -1667,7 +1666,7 @@ mod bench {
     }
 
     #[ignore = "Takes many minutes to run"]
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn profile_fri() {
         const INNER_PADDED_HEIGHTS: [usize; 4] = [1 << 8, 1 << 9, 1 << 10, 1 << 11];
         const SECURITY_LEVEL: usize = 160;

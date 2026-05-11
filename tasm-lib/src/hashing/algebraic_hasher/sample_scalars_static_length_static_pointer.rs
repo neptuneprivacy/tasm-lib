@@ -131,7 +131,7 @@ pub(crate) mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn sample_scalars_static_length_pbt() {
         for num_elements_to_sample in 0..11 {
             for extra_capacity in 0..11 {
@@ -149,7 +149,7 @@ pub(crate) mod tests {
         }
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn verify_agreement_with_tip5_sample_scalars(
         #[strategy(0_usize..500)] num_elements_to_sample: usize,
         #[strategy(0_usize..500)] extra_capacity: usize,
@@ -186,7 +186,7 @@ mod bench {
     use crate::test_prelude::*;
     use crate::verifier::challenges::shared::conventional_challenges_pointer;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn bench_10() {
         ShadowedProcedure::new(SampleScalarsStaticLengthStaticPointer {
             num_elements_to_sample: 10,
@@ -196,7 +196,7 @@ mod bench {
         .bench();
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn bench_100() {
         ShadowedProcedure::new(SampleScalarsStaticLengthStaticPointer {
             num_elements_to_sample: 100,
@@ -206,7 +206,7 @@ mod bench {
         .bench();
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn bench_63() {
         ShadowedProcedure::new(SampleScalarsStaticLengthStaticPointer {
             num_elements_to_sample: 63,

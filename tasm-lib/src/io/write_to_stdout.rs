@@ -77,7 +77,7 @@ mod tests {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn rust_shadow() {
         for data_type in DataType::big_random_generatable_type_collection() {
             ShadowedProcedure::new(WriteToStdout { data_type }).test();
@@ -90,7 +90,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark_digest_writing() {
         ShadowedProcedure::new(WriteToStdout {
             data_type: DataType::Digest,

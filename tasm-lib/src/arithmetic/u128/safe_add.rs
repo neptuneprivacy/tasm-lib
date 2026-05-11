@@ -100,17 +100,17 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn rust_shadow() {
         ShadowedClosure::new(SafeAdd).test()
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn unit_test() {
         SafeAdd.assert_expected_add_behavior(1 << 67, 1 << 67)
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn overflow_test() {
         for args in [
             (1 << 127, 1 << 127),
@@ -156,7 +156,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedClosure::new(SafeAdd).bench()
     }

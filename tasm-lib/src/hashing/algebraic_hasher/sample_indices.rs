@@ -216,7 +216,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn test() {
         ShadowedProcedure::new(SampleIndices).test();
     }
@@ -227,7 +227,7 @@ mod bench {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedProcedure::new(SampleIndices).bench();
     }

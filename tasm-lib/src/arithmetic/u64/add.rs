@@ -105,18 +105,18 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn unit_test() {
         ShadowedClosure::new(Add).test();
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn proptest(left: u64, #[strategy(0..u64::MAX - #left)] right: u64) {
         let initial_state = InitVmState::with_stack(Add.set_up_test_stack((left, right)));
         test_rust_equivalence_given_execution_state(&ShadowedClosure::new(Add), initial_state);
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn triton_vm_crashes_on_overflowing_add(left: u64, #[strategy(u64::MAX - #left..)] right: u64) {
         prop_assume!(left.checked_add(right).is_none());
 
@@ -133,7 +133,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedClosure::new(Add).bench()
     }

@@ -228,12 +228,12 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn merkle_verify_test() {
         ShadowedReadOnlyAlgorithm::new(MerkleVerify).test()
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn merkle_tree_verification_fails_if_leaf_is_disturbed_slightly(
         seed: [u8; 32],
         #[strategy(0_usize..5)] perturbation_index: usize,
@@ -250,7 +250,7 @@ mod tests {
         );
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn merkle_tree_verification_fails_if_leaf_index_is_disturbed_slightly(
         seed: [u8; 32],
         #[filter(#perturbation != 0)] perturbation: i8,
@@ -271,7 +271,7 @@ mod tests {
         );
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn merkle_tree_verification_fails_if_leaf_index_is_out_of_range(
         seed: [u8; 32],
         #[strategy(u64::from(u32::MAX)..=BFieldElement::MAX)]
@@ -290,7 +290,7 @@ mod tests {
         );
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn merkle_tree_verification_fails_if_tree_height_is_disturbed_slightly(
         seed: [u8; 32],
         #[strategy(-32_i8..32)]
@@ -326,7 +326,7 @@ mod tests {
         );
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn merkle_tree_verification_fails_if_tree_height_is_too_large(
         seed: [u8; 32],
         #[strategy(32_u32..)] tree_height: u32,
@@ -343,7 +343,7 @@ mod tests {
         );
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn merkle_tree_verification_fails_if_tree_height_is_way_too_large(
         seed: [u8; 32],
         #[strategy(u64::from(u32::MAX)..=BFieldElement::MAX)]
@@ -362,7 +362,7 @@ mod tests {
         );
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn merkle_tree_verification_fails_if_root_is_disturbed_slightly(
         seed: [u8; 32],
         #[strategy(7_usize..12)] perturbation_index: usize,
@@ -385,7 +385,7 @@ mod bench {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedReadOnlyAlgorithm::new(MerkleVerify).bench()
     }

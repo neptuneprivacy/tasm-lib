@@ -1,11 +1,5 @@
-use std::fs::File;
-use std::fs::create_dir_all;
-use std::path::Path;
-use std::path::PathBuf;
-
 use serde::Deserialize;
 use serde::Serialize;
-use serde_json::to_writer_pretty;
 use triton_vm::aet::AlgebraicExecutionTrace;
 use triton_vm::prelude::TableId;
 
@@ -43,20 +37,27 @@ impl BenchmarkResult {
     }
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 pub fn write_benchmarks(benchmarks: Vec<NamedBenchmarkResult>) {
-    let mut path = PathBuf::new();
-    path.push("benchmarks");
-    create_dir_all(&path).expect("benchmarks directory should exist");
-
-    let function_name = &benchmarks[0].name;
-    for fnname in benchmarks.iter().map(|x| &x.name) {
-        assert_eq!(
-            function_name, fnname,
-            "all fn names must agree for benchmark writing to disk"
-        );
+    if benchmarks.is_empty() {
+        return;
     }
 
-    path.push(Path::new(&function_name).with_extension("json"));
-    let output = File::create(&path).expect("open file for writing");
-    to_writer_pretty(output, &benchmarks).expect("write json to file");
+    let mut path = std::path::PathBuf::new();
+    path.push("benchmarks");
+    std::fs::create_dir_all(&path).expect("benchmarks directory should exist");
+
+    let function_name = benchmarks[0].name.as_str();
+    assert!(
+        benchmarks.iter().all(|bench| bench.name == function_name),
+        "all fn names must agree for benchmark writing to disk",
+    );
+
+    path.push(std::path::Path::new(function_name).with_extension("json"));
+    let output = std::fs::File::create(&path).expect("open file for writing");
+    serde_json::to_writer_pretty(output, &benchmarks).expect("write json to file");
 }
+
+// file access is not possible on `wasm32` architectures; ignore attempts
+#[cfg(target_arch = "wasm32")]
+pub fn write_benchmarks(_: Vec<NamedBenchmarkResult>) {}

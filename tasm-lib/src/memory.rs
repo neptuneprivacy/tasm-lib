@@ -71,10 +71,7 @@ pub fn nd_memory_region() -> MemoryRegion {
     let size = LAST_ADDRESS_AVAILABLE_FOR_NON_DETERMINISTICALLY_ALLOCATED_MEMORY.value()
         - FIRST_NON_DETERMINISTICALLY_INITIALIZED_MEMORY_ADDRESS.value();
 
-    MemoryRegion::new(
-        FIRST_NON_DETERMINISTICALLY_INITIALIZED_MEMORY_ADDRESS,
-        size.try_into().unwrap(),
-    )
+    MemoryRegion::new(FIRST_NON_DETERMINISTICALLY_INITIALIZED_MEMORY_ADDRESS, size)
 }
 
 /// Stores the encoding of the given object into memory at the given address, and returns
@@ -166,14 +163,11 @@ mod tests {
     use std::collections::HashMap;
 
     use num::Zero;
-    use proptest::prop_assert;
-    use proptest_arbitrary_interop::arb;
-    use test_strategy::proptest;
-    use triton_vm::prelude::BFieldElement;
 
     use super::*;
+    use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn last_populated_nd_memory_address_looks_sane() {
         let empty_memory = HashMap::default();
         assert!(last_populated_nd_memory_address(&empty_memory).is_none());
@@ -249,7 +243,7 @@ mod tests {
         );
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn first_free_nd_address_looks_sane() {
         for address in [0, 1, 100, u32::MAX - 3, u32::MAX - 3] {
             let one_populated_word: HashMap<_, _> = [(bfe!(address), BFieldElement::new(42))]
@@ -281,12 +275,12 @@ mod tests {
         assert!(first_free_nd_address(&last_word_populated).is_none());
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn all_addresses_between_0_and_u32max_belong_to_nd_memory(nd_address: u32) {
         prop_assert!(nd_memory_region().contains_address(bfe!(nd_address)));
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn addresses_outside_u32_range_do_not_belong_to_nd_memory(
         #[strategy(arb())]
         #[filter(#address.value() > u32::MAX as u64)]

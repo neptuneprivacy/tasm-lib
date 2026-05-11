@@ -106,14 +106,14 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn squeeze_repeatedly_static_number_pbt() {
         for num_squeezes in 0..25 {
             ShadowedProcedure::new(SqueezeRepeatedlyStaticNumber { num_squeezes }).test();
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn test_dyn_equivalence() {
         // Verify that the snippets for the dynamically known and statically known
         // number of squeezes agree.
@@ -180,12 +180,12 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn bench_10() {
         ShadowedProcedure::new(SqueezeRepeatedlyStaticNumber { num_squeezes: 10 }).bench();
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn bench_200() {
         ShadowedProcedure::new(SqueezeRepeatedlyStaticNumber { num_squeezes: 200 }).bench();
     }

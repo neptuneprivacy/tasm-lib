@@ -376,7 +376,19 @@ pub trait SignedOffSnippet: BasicSnippet {
 
     /// Panics if any [sign-offs](BasicSnippet::sign_offs) disagree with the actual
     /// [fingerprint](Self::fingerprint).
+    #[cfg_attr(
+        not(any(target_os = "linux", target_os = "macos", target_os = "windows")),
+        allow(unreachable_code)
+    )]
     fn assert_all_sign_offs_are_up_to_date(&self) {
+        // Program fingerprinting relies on the (derived) implementation of
+        // `Hash` for `LabelledInstruction` and `DefaultHasher`, neither of
+        // which is portable across platforms. In practice, it seems that things
+        // are portable enough across the three major operating system families,
+        // but not for architectures like `wam32`.
+        #[cfg(not(any(target_os = "linux", target_os = "macos", target_os = "windows")))]
+        return;
+
         let fingerprint = self.fingerprint();
         let mut out_of_date_sign_offs = self
             .sign_offs()
@@ -431,6 +443,7 @@ impl From<u64> for SignOffFingerprint {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::test_prelude::*;
 
     macro_rules! dummy_snippet {
         ($name:ident: $($instr:tt)+) => {
@@ -453,7 +466,7 @@ mod tests {
 
     dummy_snippet!(DummySnippet: dummysnippet: push 14 push 14 pop 2 return);
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn init_stack_agrees_with_tvm() {
         // Verify that our assumptions about the initial stack at program start
         // agrees with Triton VM.
@@ -465,7 +478,7 @@ mod tests {
         assert_eq!(init_vm_state.op_stack.stack, calculated_init_stack);
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn defined_traits_are_dyn_compatible() {
         fn basic_snippet_is_dyn_compatible(snippet: Box<dyn BasicSnippet>) {
             snippet.fingerprint();
@@ -479,7 +492,7 @@ mod tests {
         signed_off_snippet_is_dyn_compatible(Box::new(DummySnippet));
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn call_targets_dont_influence_snippet_fingerprints() {
         dummy_snippet!(SomeLabel: call some_label);
         dummy_snippet!(OtherLabel: call other_label);
@@ -487,7 +500,7 @@ mod tests {
         assert_eq!(SomeLabel.fingerprint(), OtherLabel.fingerprint());
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn instruction_arguments_do_influence_snippet_fingerprints() {
         dummy_snippet!(Push20: push 20);
         dummy_snippet!(Push42: push 42);

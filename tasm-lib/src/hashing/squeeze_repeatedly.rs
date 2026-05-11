@@ -124,7 +124,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn test() {
         // custom test procedure because it is a procedure but we do want to test memory equivalence
 
@@ -173,7 +173,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedProcedure::new(SqueezeRepeatedly).bench();
     }

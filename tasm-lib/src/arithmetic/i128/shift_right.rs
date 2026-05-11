@@ -280,17 +280,17 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn standard_test() {
         ShadowedClosure::new(ShiftRight).test()
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn proptest(#[strategy(arb())] arg: i128, #[strategy(0u32..128)] shamt: u32) {
         ShiftRight.assert_expected_shift_behavior(arg, shamt);
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn test_edge_cases() {
         // all i128s from all combinations of {-1, 0, 1} as their limbs
         let arguments = (0..4)
@@ -311,7 +311,7 @@ mod tests {
 
     /// Shifting right by 127 must produce either 0xff..f, or 0x00..0, depending on
     /// the sign of the i128-argument.
-    #[proptest(cases = 50)]
+    #[macro_rules_attr::apply(proptest(cases = 50))]
     fn shifting_right_by_127_is_zero_or_minus_1(arg: i128) {
         let mut final_state = tasm_final_state(
             &ShadowedClosure::new(ShiftRight),
@@ -337,7 +337,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedClosure::new(ShiftRight).bench()
     }

@@ -53,12 +53,6 @@ pub fn bench_and_profile_program<P: CompiledProgram>(
     public_input: &PublicInput,
     nondeterminism: &NonDeterminism,
 ) {
-    use std::fs::File;
-    use std::fs::create_dir_all;
-    use std::io::Write;
-    use std::path::Path;
-    use std::path::PathBuf;
-
     use crate::snippet_bencher::NamedBenchmarkResult;
 
     let (program_instructions, library) = P::code();
@@ -84,21 +78,32 @@ pub fn bench_and_profile_program<P: CompiledProgram>(
 
     // write profile to standard output in case someone is watching
     let profile = crate::generate_full_profile(name, program, public_input, nondeterminism);
+    write_profile(name, &profile);
     println!("{profile}");
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn write_profile(name: &str, profile: &str) {
+    use std::io::Write;
 
     // write profile to profile file
-    let mut path = PathBuf::new();
+    let mut path = std::path::PathBuf::new();
     path.push("profiles");
-    create_dir_all(&path).expect("profiles directory should exist");
+    std::fs::create_dir_all(&path).expect("profiles directory should exist");
 
-    path.push(Path::new(name).with_extension("profile"));
-    let mut file = File::create(path).expect("open file for writing");
+    path.push(std::path::Path::new(name).with_extension("profile"));
+    let mut file = std::fs::File::create(path).expect("open file for writing");
     write!(file, "{profile}").unwrap();
 }
+
+// file access is not possible on `wasm32` architectures; ignore attempts
+#[cfg(target_arch = "wasm32")]
+fn write_profile(_: &str, _: &str) {}
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::test_prelude::*;
 
     pub(super) struct FiboTest;
 
@@ -146,7 +151,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn test_fibo_shadow() {
         let public_input = PublicInput::new(vec![BFieldElement::new(501)]);
         let nondeterminism = NonDeterminism::new(vec![]);
@@ -158,9 +163,9 @@ mod tests {
 mod benches {
     use super::tests::FiboTest;
     use super::*;
-    use crate::snippet_bencher::BenchmarkCase;
+    use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn bench_fibo() {
         let public_input = PublicInput::new(vec![BFieldElement::new(501)]);
         let secret_input = NonDeterminism::new(vec![]);

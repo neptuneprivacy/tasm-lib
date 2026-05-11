@@ -247,12 +247,12 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn sum_xfes_pbt() {
         ShadowedFunction::new(SumOfXfes).test()
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn sum_xfes_unit_test() {
         let snippet = SumOfXfes;
         let input_list_2_long: Vec<XFieldElement> = vec![rand::random(), rand::random()];
@@ -304,7 +304,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedFunction::new(SumOfXfes).bench();
     }

@@ -182,7 +182,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn test() {
         for _ in 0..10 {
             ShadowedFunction::new(HornerEvaluationDynamicLength).test();
@@ -195,7 +195,7 @@ mod bench {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedFunction::new(HornerEvaluationDynamicLength).bench();
     }

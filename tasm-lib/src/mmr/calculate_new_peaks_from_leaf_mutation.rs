@@ -227,12 +227,12 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn rust_shadow() {
         ShadowedFunction::new(MmrCalculateNewPeaksFromLeafMutationMtIndices).test();
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn mmra_leaf_mutate_test_single() {
         let digest0 = Tip5::hash(&BFieldElement::new(4545));
         let digest1 = Tip5::hash(&BFieldElement::new(12345));
@@ -278,21 +278,21 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn mmra_leaf_mutate_test_many_leaf_sizes() {
         for leaf_count in 1..30 {
             mmra_leaf_mutate_test_n_leafs(leaf_count);
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn mmra_leaf_mutate_test_other_leaf_sizes() {
         for leaf_count in [127, 128] {
             mmra_leaf_mutate_test_n_leafs(leaf_count);
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn mmra_leaf_mutate_big() {
         for log_sizes in [15u64, 20, 25, 32, 35, 40, 45, 50, 55, 60, 62, 63] {
             println!("log_sizes = {log_sizes}");
@@ -314,7 +314,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn mmra_leaf_mutate_advanced() {
         for log_size in [31, 63] {
             println!("log_sizes = {log_size}");
@@ -412,7 +412,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedFunction::new(MmrCalculateNewPeaksFromLeafMutationMtIndices).bench();
     }

@@ -165,7 +165,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn sum_xfes_pbt() {
         let snippets = (0..20).chain(100..110).map(|x| SumOfXfes { length: x });
         for test_case in snippets {
@@ -173,7 +173,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn xfe_array_sum_unit_test() {
         let xfes = vec![
             XFieldElement::new([
@@ -222,12 +222,12 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn sum_xfes_bench_100() {
         ShadowedFunction::new(SumOfXfes { length: 100 }).bench();
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn sum_xfes_bench_200() {
         ShadowedFunction::new(SumOfXfes { length: 200 }).bench();
     }

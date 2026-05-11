@@ -124,7 +124,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn sum_bfes_pbt() {
         let snippets = (0..20).chain(100..110).map(|x| SumOfBfes { length: x });
         for test_case in snippets {
@@ -138,12 +138,12 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn sum_bfes_bench_100() {
         ShadowedFunction::new(SumOfBfes { length: 100 }).bench();
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn sum_bfes_bench_200() {
         ShadowedFunction::new(SumOfBfes { length: 200 }).bench();
     }

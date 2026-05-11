@@ -129,12 +129,12 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn i128_lt_proptest() {
         ShadowedClosure::new(Lt).test();
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn input_not_u32_words_negative_test(
         #[strategy(0usize..8)] stack_index_bad_word: usize,
         #[strategy(arb())]
@@ -161,7 +161,7 @@ mod tests {
         );
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn i128_lt_unit_test_min_max() {
         let init_stack = Lt.set_up_test_stack((i128::MAX, i128::MIN));
         let mut expected_end_stack = Lt.init_stack_for_isolated_run();
@@ -178,7 +178,7 @@ mod tests {
         );
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn i128_lt_unit_test_zero_zero() {
         let init_stack = Lt.set_up_test_stack((0, 0));
         let mut expected_end_stack = Lt.init_stack_for_isolated_run();
@@ -195,7 +195,7 @@ mod tests {
         );
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn equal_elements_are_not_lt_prop(value: i128) {
         let init_stack = Lt.set_up_test_stack((value, value));
         let mut expected_end_stack = Lt.init_stack_for_isolated_run();
@@ -218,7 +218,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedClosure::new(Lt).bench();
     }

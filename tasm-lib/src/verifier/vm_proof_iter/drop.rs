@@ -72,12 +72,12 @@ mod tests {
     use crate::verifier::vm_proof_iter::dequeue_next_as::DequeueNextAs;
     use crate::verifier::vm_proof_iter::shared::vm_proof_iter_struct::VmProofIter;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn rust_shadow() {
         ShadowedAccessor::new(Drop).test();
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn negative_test_proof_len_mismatch() {
         let proof_ptr = bfe!(450);
         let proof_len = 10_000u32;
@@ -97,7 +97,7 @@ mod tests {
         );
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn negative_test_proof_item_count_mismatch() {
         let proof_ptr = bfe!(450);
         let proof_len = 10_000u32;
@@ -193,7 +193,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedAccessor::new(Drop).bench();
     }

@@ -226,7 +226,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn rust_shadow() {
         ShadowedFunction::new(BagPeaks).test()
     }
@@ -237,7 +237,7 @@ mod benches {
     use super::BagPeaks;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedFunction::new(BagPeaks).bench();
     }

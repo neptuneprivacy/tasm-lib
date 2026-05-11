@@ -297,12 +297,12 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn rust_shadow() {
         ShadowedFunction::new(MerkleRootFromXfes).test();
     }
 
-    #[proptest(cases = 100)]
+    #[macro_rules_attr::apply(proptest(cases = 100))]
     fn cannot_handle_input_list_of_length_not_pow2(
         #[strategy(vec(arb(), 0..2048))]
         #[filter(!#leafs.len().is_power_of_two())]
@@ -322,7 +322,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedFunction::new(MerkleRootFromXfes).bench();
     }

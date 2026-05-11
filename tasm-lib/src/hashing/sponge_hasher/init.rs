@@ -69,7 +69,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn sponge_init_test() {
         ShadowedProcedure::new(Init).test();
     }
@@ -80,7 +80,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedProcedure::new(Init).bench();
     }

@@ -340,12 +340,12 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn test() {
         ShadowedAlgorithm::new(VerifyFriAuthenticationPaths).test();
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn fri_authentication_fails_if_root_is_disturbed_slightly(
         seed: [u8; 32],
         #[strategy(0_usize..5)] perturbation_index: usize,
@@ -362,7 +362,7 @@ mod tests {
         );
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn fri_authentication_fails_if_xor_bitflag_is_disturbed_slightly(seed: [u8; 32]) {
         let mut initial_state = VerifyFriAuthenticationPaths.pseudorandom_initial_state(seed, None);
         let top_of_stack = initial_state.stack.len() - 1;
@@ -377,7 +377,7 @@ mod tests {
         );
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn fri_authentication_fails_if_authentication_path_is_disturbed_slightly(
         seed: [u8; 32],
         digest_index: usize,
@@ -397,7 +397,7 @@ mod tests {
         );
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn fri_authentication_fails_if_a_index_is_disturbed_slightly(
         seed: [u8; 32],
         perturbation_index: usize,
@@ -440,7 +440,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedAlgorithm::new(VerifyFriAuthenticationPaths).bench();
     }

@@ -223,12 +223,12 @@ pub(crate) mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn rust_shadow() {
         ShadowedClosure::new(MmrLeafIndexToMtIndexAndPeakIndex).test();
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn property_test(
         #[strategy(1_u64..)] num_leafs: u64,
         #[strategy(0_u64..#num_leafs)] leaf_index: u64,
@@ -236,7 +236,7 @@ pub(crate) mod tests {
         MmrLeafIndexToMtIndexAndPeakIndex.assert_expected_behavior(num_leafs, leaf_index);
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn negative_property_test(num_leafs: u64, #[strategy(#num_leafs..)] leaf_index: u64) {
         let initial_stack =
             MmrLeafIndexToMtIndexAndPeakIndex.set_up_test_stack((num_leafs, leaf_index));
@@ -254,7 +254,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedClosure::new(MmrLeafIndexToMtIndexAndPeakIndex).bench();
     }

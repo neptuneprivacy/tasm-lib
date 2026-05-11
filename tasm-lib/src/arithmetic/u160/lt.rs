@@ -111,12 +111,12 @@ mod tests {
         test_rust_equivalence_given_execution_state(&ShadowedClosure::new(Lt), initial_state);
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn lt_u160_standard_test() {
         ShadowedClosure::new(Lt).test()
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn lt_u160_edge_cases_test() {
         let mut boundary_points = [0, 1 << 32, 1 << 64, 1 << 96, u128::MAX]
             .into_iter()
@@ -140,7 +140,7 @@ mod tests {
         }
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn lt_u160_randomized_test_identical_args(v: [u32; 5]) {
         test_rust_tasm_equivalence(v, v);
     }
@@ -151,7 +151,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedClosure::new(Lt).bench()
     }

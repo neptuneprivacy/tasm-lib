@@ -176,12 +176,12 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn ruts_shadow() {
         ShadowedClosure::new(SafePow).test()
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn u32_pow_unit_test() {
         for (base, exp) in [
             (0, 0),
@@ -226,7 +226,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn u32_pow_negative_test() {
         for (base, exp) in [
             (2, 32),
@@ -274,7 +274,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedClosure::new(SafePow).bench()
     }

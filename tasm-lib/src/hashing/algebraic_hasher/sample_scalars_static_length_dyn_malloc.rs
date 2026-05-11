@@ -131,14 +131,14 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn sample_scalars_static_length_pbt() {
         for i in 0..100 {
             ShadowedProcedure::new(SampleScalarsStaticLengthDynMalloc { num_elements: i }).test();
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn verify_agreement_with_tip5_sample_scalars() {
         let empty_sponge = Tip5::init();
         let mut non_empty_sponge = Tip5::init();
@@ -184,17 +184,17 @@ mod bench {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn bench_10() {
         ShadowedProcedure::new(SampleScalarsStaticLengthDynMalloc { num_elements: 10 }).bench();
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn bench_100() {
         ShadowedProcedure::new(SampleScalarsStaticLengthDynMalloc { num_elements: 100 }).bench();
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn bench_63() {
         ShadowedProcedure::new(SampleScalarsStaticLengthDynMalloc { num_elements: 63 }).bench();
     }

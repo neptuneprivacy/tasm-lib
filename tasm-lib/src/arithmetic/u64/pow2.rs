@@ -111,19 +111,19 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn rust_shadow() {
         ShadowedClosure::new(Pow2).test();
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn unit_test() {
         for arg in 0..64 {
             Pow2.assert_expected_behavior(arg);
         }
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn negative_property_test(#[strategy(64_u32..)] arg: u32) {
         let stack = Pow2.set_up_test_stack(arg);
 
@@ -140,7 +140,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedClosure::new(Pow2).bench();
     }

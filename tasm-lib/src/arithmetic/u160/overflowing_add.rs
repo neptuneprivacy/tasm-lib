@@ -169,18 +169,18 @@ pub(crate) mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn rust_shadow() {
         ShadowedClosure::new(OverflowingAdd).test();
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn unit_test() {
         let snippet = OverflowingAdd;
         snippet.assert_expected_add_behavior(u128_to_u160(1u128 << 67), u128_to_u160(1u128 << 67))
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn overflow_test() {
         let test_overflowing_add = |a, b| {
             OverflowingAdd.assert_expected_add_behavior(a, b);

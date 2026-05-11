@@ -169,12 +169,12 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn rust_shadow() {
         ShadowedClosure::new(ShiftRight).test();
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn too_large_shift_crashes_vm(arg: u128, #[strategy(128_u32..)] shift_amount: u32) {
         test_assertion_failure(
             &ShadowedClosure::new(ShiftRight),
@@ -189,7 +189,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedClosure::new(ShiftRight).bench();
     }

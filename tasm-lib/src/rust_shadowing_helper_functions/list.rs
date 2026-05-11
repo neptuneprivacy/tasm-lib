@@ -271,13 +271,10 @@ pub fn list_set_length(
 
 #[cfg(test)]
 mod tests {
-    use proptest::prop_assert_eq;
-    use proptest_arbitrary_interop::arb;
-    use test_strategy::proptest;
-
     use super::*;
+    use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn new_list_set_length() {
         let mut memory = HashMap::default();
         let list_pointer = BFieldElement::new(20);
@@ -288,7 +285,7 @@ mod tests {
         assert_eq!(new_length, list_get_length(list_pointer, &memory));
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn element_pointer_from_list_pointer_on_static_list_with_static_length_items(
         #[strategy(arb())] list: Vec<Digest>,
         #[strategy(arb())] list_pointer: BFieldElement,
@@ -311,7 +308,7 @@ mod tests {
         }
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn element_pointer_from_list_pointer_on_static_list_with_dyn_length_items(
         #[strategy(arb())] list: Vec<Vec<BFieldElement>>,
         #[strategy(arb())] list_pointer: BFieldElement,

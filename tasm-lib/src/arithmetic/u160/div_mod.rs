@@ -175,12 +175,12 @@ mod tests {
     use crate::test_prelude::Algorithm;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn std_test() {
         ShadowedAlgorithm::new(DivMod).test()
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn too_big_remainder() {
         let numerator = 10;
         let denominator = 3;
@@ -204,7 +204,7 @@ mod tests {
         )
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn euler_equation_error() {
         let numerator = 1u128 << 99;
         let denominator = 1u128 << 45;
@@ -228,7 +228,7 @@ mod tests {
         )
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn division_by_zero() {
         let numerator = u128_to_u160(52);
         let denominator = u128_to_u160(0);
@@ -240,7 +240,7 @@ mod tests {
         );
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn bad_encoding() {
         let not_u32 = bfe!(1u64 << 32);
         let valid_u32 = bfe!(14);
@@ -416,7 +416,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedAlgorithm::new(DivMod).bench()
     }

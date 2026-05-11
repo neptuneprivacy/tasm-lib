@@ -261,7 +261,7 @@ mod tests {
     use crate::test_helpers::test_rust_equivalence_given_complete_state;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn returns_true_on_multiset_equality() {
         let snippet = MultisetEqualityU64s;
         let return_value_is_true = [
@@ -289,7 +289,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn returns_false_on_multiset_inequality() {
         let snippet = MultisetEqualityU64s;
         let return_value_is_false = [
@@ -317,7 +317,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn multiset_equality_u64s_pbt() {
         ShadowedFunction::new(MultisetEqualityU64s).test()
     }
@@ -601,7 +601,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedFunction::new(MultisetEqualityU64s).bench()
     }

@@ -220,7 +220,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn rust_shadow() {
         for element_type in [
             DataType::U32,
@@ -233,7 +233,7 @@ mod tests {
         }
     }
 
-    #[proptest]
+    #[macro_rules_attr::apply(proptest)]
     fn out_of_bounds_index_crashes_vm(
         #[strategy(Union::new(
             [DataType::U32, DataType::U64, DataType::Xfe, DataType::Digest].map(Just)
@@ -259,7 +259,7 @@ mod benches {
     use super::*;
     use crate::test_prelude::*;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn benchmark() {
         ShadowedFunction::new(SplitOff::new(DataType::Xfe)).bench();
     }

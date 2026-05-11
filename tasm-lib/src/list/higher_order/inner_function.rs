@@ -222,8 +222,9 @@ impl InnerFunction {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::test_prelude::test;
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn breakpoint_does_not_influence_raw_code_inlining() {
         let raw_code = RawCode {
             function: triton_asm! { my_label: return break },
@@ -234,7 +235,7 @@ mod tests {
         assert_eq!(triton_asm!(), inlined_code);
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn type_hints_do_not_influence_raw_code_inlining() {
         let raw_code = RawCode {
             function: triton_asm! { my_label: hint a = stack[0] hint b = stack[1] return },
@@ -245,7 +246,7 @@ mod tests {
         assert_eq!(triton_asm!(), inlined_code);
     }
 
-    #[test]
+    #[macro_rules_attr::apply(test)]
     fn allow_raw_code_with_recurse_or_return_instruction() {
         let raw_code = triton_asm!(
             please_help_me:
