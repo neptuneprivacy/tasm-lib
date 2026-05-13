@@ -3,6 +3,16 @@
 All notable changes are documented in this file.
 Lines marked “(!)” indicate a breaking change.
 
+## [3.0.0](https://github.com/TritonVM/tasm-lib/compare/v2.0.0..v3.0.0) - 2026-05-13
+
+### ✨ Features
+
+- (!) Make 32-bit architecture compatible ([6c708622](https://github.com/TritonVM/tasm-lib/commit/6c708622))
+
+### ⚙️ Miscellaneous
+
+- (!) Use `Result`s in snippet's rust shadow ([38fb91ef](https://github.com/TritonVM/tasm-lib/commit/38fb91ef))
+
 ## [2.0.0](https://github.com/TritonVM/tasm-lib/compare/v1.0.0..v2.0.0) - 2026-01-22
 
 ### ✨ Features
