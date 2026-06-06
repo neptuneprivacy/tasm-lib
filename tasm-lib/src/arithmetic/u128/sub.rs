@@ -1,10 +1,7 @@
-use std::collections::HashMap;
-
 use triton_vm::prelude::*;
 
+use crate::arithmetic::u128::overflowing_add::OverflowingAdd;
 use crate::prelude::*;
-use crate::traits::basic_snippet::Reviewer;
-use crate::traits::basic_snippet::SignOffFingerprint;
 
 /// [Subtraction][sub] for unsigned 128-bit integers.
 ///
@@ -48,11 +45,13 @@ impl BasicSnippet for Sub {
         "tasmlib_arithmetic_u128_sub".to_string()
     }
 
-    fn code(&self, _: &mut Library) -> Vec<LabelledInstruction> {
+    fn code(&self, library: &mut Library) -> Vec<LabelledInstruction> {
+        let assert_operands_are_u32 = OverflowingAdd::assert_operands_are_u32(library);
         triton_asm!(
             // BEFORE: _ r_3 r_2 r_1 r_0 l_3 l_2 l_1 l_0
             // AFTER:  _ diff_3 diff_2 diff_1 diff_0
             {self.entrypoint()}:
+                {&assert_operands_are_u32}
                 pick 4
                 push -1
                 mul
@@ -102,12 +101,6 @@ impl BasicSnippet for Sub {
                             // _ [diff: u128]
                 return
         )
-    }
-
-    fn sign_offs(&self) -> HashMap<Reviewer, SignOffFingerprint> {
-        let mut sign_offs = HashMap::new();
-        sign_offs.insert(Reviewer("ferdinand"), 0xd1effbb4a16f9979.into());
-        sign_offs
     }
 }
 
@@ -178,6 +171,20 @@ mod tests {
             &ShadowedClosure::new(Sub),
             InitVmState::with_stack(Sub.set_up_test_stack((subtrahend, minuend))),
             &[Sub::OVERFLOW_ERROR_ID],
+        );
+    }
+
+    /// A non-canonical limb (in `[2^32, p)`) must be rejected before the borrow
+    /// chain can field-wrap it and suppress the underflow assert.
+    #[macro_rules_attr::apply(test)]
+    fn non_canonical_limb_is_rejected() {
+        let mut stack = Sub.set_up_test_stack((3, 5)); // (subtrahend, minuend)
+        let top = stack.len() - 1;
+        stack[top] = BFieldElement::new(BFieldElement::P - 1); // minuend_0 := p - 1
+        test_assertion_failure(
+            &ShadowedClosure::new(Sub),
+            InitVmState::with_stack(stack),
+            &[617],
         );
     }
 }

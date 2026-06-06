@@ -26,15 +26,15 @@ impl BasicSnippet for SafeAdd {
         "tasmlib_arithmetic_u128_safe_add".to_string()
     }
 
-    /// Four top elements of stack are assumed to be valid u32s. So to have
-    /// a value that's less than 2^32.
-    fn code(&self, _: &mut Library) -> Vec<LabelledInstruction> {
+    fn code(&self, library: &mut Library) -> Vec<LabelledInstruction> {
+        let assert_operands_are_u32 = OverflowingAdd::assert_operands_are_u32(library);
         let add_code = OverflowingAdd::addition_code();
 
         triton_asm! {
             // BEFORE: _ rhs_3 rhs_2 rhs_1 rhs_0 lhs_3 lhs_2 lhs_1 lhs_0
             // AFTER:  _ sum_3 sum_2 sum_1 sum_0
             {self.entrypoint()}:
+                {&assert_operands_are_u32}
                 {&add_code}
                 // _ sum_3 sum_2 sum_1 sum_0 overflow
 

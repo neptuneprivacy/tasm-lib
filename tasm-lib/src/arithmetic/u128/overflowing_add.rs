@@ -1,10 +1,7 @@
-use std::collections::HashMap;
-
 use triton_vm::prelude::*;
 
+use crate::arithmetic::u32::is_u32::IsU32;
 use crate::prelude::*;
-use crate::traits::basic_snippet::Reviewer;
-use crate::traits::basic_snippet::SignOffFingerprint;
 
 /// Mimics [`u128::overflowing_add`].
 ///
@@ -58,6 +55,40 @@ impl OverflowingAdd {
                     // _ sum_3 sum_2 sum_1 sum_0 is_overflow
         )
     }
+
+    /// Assert that both `u128` operands consist of canonical `u32` limbs.
+    ///
+    /// The [`addition_code`](Self::addition_code) carry chain (and the
+    /// subtraction in [`Sub`](super::sub::Sub)) is built from field `add`/`split`,
+    /// which only equals integer arithmetic when every limb is `< 2^32`. A
+    /// non-canonical limb (in `[2^32, p)`) would field-wrap mod `p`, silently
+    /// under-reporting the result and suppressing the overflow/borrow assert. The
+    /// add/sub family takes "limbs are valid u32s" as a precondition; this makes
+    /// it self-enforced (matching [`i128::shift_right`][shr], which also asserts
+    /// `is_u32` on its limbs) so a non-canonical, prover-decoded amount cannot
+    /// reach the wrapping carry chain unchecked.
+    ///
+    /// [shr]: crate::arithmetic::i128::shift_right::ShiftRight
+    ///
+    /// ```text
+    /// BEFORE: _ r_3 r_2 r_1 r_0 l_3 l_2 l_1 l_0
+    /// AFTER:  _ r_3 r_2 r_1 r_0 l_3 l_2 l_1 l_0
+    /// ```
+    pub(crate) fn assert_operands_are_u32(library: &mut Library) -> Vec<LabelledInstruction> {
+        let is_u32 = library.import(Box::new(IsU32));
+        triton_asm! {
+            // _ r_3 r_2 r_1 r_0 l_3 l_2 l_1 l_0
+            dup 7 call {is_u32} assert error_id 610
+            dup 6 call {is_u32} assert error_id 611
+            dup 5 call {is_u32} assert error_id 612
+            dup 4 call {is_u32} assert error_id 613
+            dup 3 call {is_u32} assert error_id 614
+            dup 2 call {is_u32} assert error_id 615
+            dup 1 call {is_u32} assert error_id 616
+            dup 0 call {is_u32} assert error_id 617
+            // _ r_3 r_2 r_1 r_0 l_3 l_2 l_1 l_0
+        }
+    }
 }
 
 impl BasicSnippet for OverflowingAdd {
@@ -78,14 +109,14 @@ impl BasicSnippet for OverflowingAdd {
         "tasmlib_arithmetic_u128_overflowing_add".to_string()
     }
 
-    fn code(&self, _: &mut Library) -> Vec<LabelledInstruction> {
-        triton_asm! { {self.entrypoint()}: {&Self::addition_code()} return }
-    }
-
-    fn sign_offs(&self) -> HashMap<Reviewer, SignOffFingerprint> {
-        let mut sign_offs = HashMap::new();
-        sign_offs.insert(Reviewer("ferdinand"), 0xd5c365d6252846bd.into());
-        sign_offs
+    fn code(&self, library: &mut Library) -> Vec<LabelledInstruction> {
+        let assert_operands_are_u32 = Self::assert_operands_are_u32(library);
+        triton_asm! {
+            {self.entrypoint()}:
+                {&assert_operands_are_u32}
+                {&Self::addition_code()}
+                return
+        }
     }
 }
 
@@ -183,6 +214,21 @@ pub(crate) mod tests {
 
             test_overflowing_add(a, b);
         }
+    }
+
+    /// A non-canonical limb (in `[2^32, p)`) must be rejected before the carry
+    /// chain can field-wrap it. Mirrors the audit PoC: `lhs_0 = p - 1`,
+    /// `rhs_0 = 3` would otherwise wrap to `2` with the overflow flag cleared.
+    #[macro_rules_attr::apply(test)]
+    fn non_canonical_limb_is_rejected() {
+        let mut stack = OverflowingAdd.set_up_test_stack((3, 0)); // (rhs, lhs)
+        let top = stack.len() - 1;
+        stack[top] = BFieldElement::new(BFieldElement::P - 1); // lhs_0 := p - 1
+        test_assertion_failure(
+            &ShadowedClosure::new(OverflowingAdd),
+            InitVmState::with_stack(stack),
+            &[617],
+        );
     }
 }
 
