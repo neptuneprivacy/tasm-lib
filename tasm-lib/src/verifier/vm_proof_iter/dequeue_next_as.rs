@@ -8,6 +8,7 @@ use triton_vm::table::QuotientSegments;
 use twenty_first::math::x_field_element::EXTENSION_DEGREE;
 use twenty_first::prelude::Polynomial;
 
+use crate::hashing::absorb_multiple::AbsorbMultiple;
 use crate::hashing::sponge_hasher::pad_and_absorb_all::PadAndAbsorbAll;
 use crate::prelude::*;
 
@@ -97,8 +98,25 @@ impl DequeueNextAs {
     /// AFTER:  _ *proof_item_size
     /// ```
     fn assert_consistent_size_indicators(&self, library: &mut Library) -> Vec<LabelledInstruction> {
-        if self.proof_item.payload_static_length().is_some() {
-            return vec![];
+        // For statically-sized items, the list-element size word is implied by
+        // the type and is not otherwise consulted (the iterator advance and the
+        // payload pointer both use the static length). Absorbing aside, leaving
+        // it unchecked would make the proof encoding malleable in this field, so
+        // we pin it to its only canonical value: 1 (discriminant) + payload.
+        if let Some(static_length) = self.proof_item.payload_static_length() {
+            let expected_item_size = static_length + 1;
+            return triton_asm! {
+                // _ *proof_item_size
+                dup 0
+                read_mem 1
+                pop 1
+                // _ *proof_item_size indicated_item_size
+
+                push {expected_item_size}
+                eq
+                assert error_id 304
+                // _ *proof_item_size
+            };
         }
 
         let calculate_own_size = self.proof_item_calculate_size(library);
@@ -151,6 +169,30 @@ impl DequeueNextAs {
             return vec![];
         }
 
+        // For statically-sized items the absorb length must NOT be read from the
+        // prover-controlled in-memory size word: doing so would let a malicious
+        // prover shorten the absorb and exclude the committed payload (e.g. a
+        // Merkle root) from the Fiat-Shamir transcript. Absorb a fixed number of
+        // words instead — 1 (discriminant) + the static payload length — exactly
+        // the canonical encoding of the proof item. `assert_consistent_size_indicators`
+        // separately pins the size word, so the encoding stays non-malleable.
+        if let Some(static_length) = self.proof_item.payload_static_length() {
+            let absorb_length = static_length + 1;
+            let absorb_multiple = library.import(Box::new(AbsorbMultiple));
+            return triton_asm! {
+                // _ *proof_item_size
+                dup 0
+                addi 1              // _ *proof_item_size *discriminant
+                push {absorb_length}
+                                    // _ *proof_item_size *discriminant absorb_length
+                call {absorb_multiple}
+                                    // _ *proof_item_size
+            };
+        }
+
+        // Dynamically-sized items: the size word was validated against the
+        // recomputed payload size in `assert_consistent_size_indicators`, so it
+        // is safe to drive the absorb from the memory word.
         let pad_and_absorb_all = library.import(Box::new(PadAndAbsorbAll));
         triton_asm! {
             dup 0           // _ *proof_item_size *proof_item_size
@@ -401,12 +443,29 @@ mod tests {
     impl RustShadowForDequeueNextAs<'_> {
         fn execute(&mut self) -> Result<Vec<BFieldElement>, RustShadowError> {
             self.assert_correct_discriminant()?;
+            self.assert_static_size_word_is_canonical()?;
             self.maybe_alter_fiat_shamir_heuristic_with_proof_item();
             self.update_stack_using_current_proof_item();
             self.update_proof_item_iter();
             self.update_current_item_count();
 
             Ok(self.public_output())
+        }
+
+        /// Mirror the in-TASM static-item size-word check (`error_id 304`): for
+        /// statically-sized items the list-element size word must equal its only
+        /// canonical value, `1 (discriminant) + payload`.
+        fn assert_static_size_word_is_canonical(&self) -> Result<(), RustShadowError> {
+            let Some(static_length) = self.dequeue_next_as.proof_item.payload_static_length()
+            else {
+                return Ok(());
+            };
+            let size_pointer = self.current_proof_item_list_element_size_pointer();
+            let &size_word = self.memory.get(&size_pointer).unwrap();
+            if size_word != BFieldElement::new((static_length + 1) as u64) {
+                return Err(RustShadowError::Other);
+            }
+            Ok(())
         }
 
         fn current_proof_item_list_element_size_pointer(&self) -> BFieldElement {
@@ -801,20 +860,26 @@ mod tests {
         dequeue_next_as.test_rust_equivalence(initial_state);
     }
 
-    /// PoC for the audit finding: the Fiat-Shamir absorb length for a
-    /// *statically*-sized proof item is read from the prover-controlled
-    /// in-memory size word and never checked against the canonical size.
-    /// A malicious prover can set it to 1 so that only the (constant)
-    /// discriminant is absorbed and the committed Merkle root is excluded
-    /// from the transcript.
+    /// Regression test for the audit finding: the Fiat-Shamir absorb length for
+    /// a *statically*-sized proof item used to be read from the prover-controlled
+    /// in-memory size word, which was never checked against the canonical size.
+    /// A malicious prover could set it to 1 so that only the (constant)
+    /// discriminant was absorbed and the committed Merkle root was excluded from
+    /// the transcript — a Fiat-Shamir binding break.
+    ///
+    /// The fix is twofold: the absorb length is now a compile-time constant
+    /// (`static_length + 1`), and the size word is asserted canonical
+    /// (`error_id 304`) so the proof encoding is not malleable in this field.
+    /// This test pins both properties: distinct roots always produce distinct
+    /// transcripts, and any non-canonical size word is rejected outright.
     #[macro_rules_attr::apply(test)]
-    fn poc_static_fs_item_absorb_length_is_unbound() {
+    fn static_fs_item_size_word_is_bound_and_absorb_is_static() {
         let dequeue = DequeueNextAs::new(ProofItemVariant::MerkleRoot);
         let program = Program::new(&dequeue.link_for_isolated_run());
 
-        // Run the snippet over a single MerkleRoot item, optionally corrupting
-        // the item's size word, and return the terminal Fiat-Shamir sponge.
-        let run = |root: Digest, corrupt_size_word_to: Option<u64>| -> Tip5 {
+        // Run the snippet over a single MerkleRoot item, optionally setting the
+        // item's size word to a (possibly non-canonical) value.
+        let run = |root: Digest, size_word: Option<u64>| -> Result<VMState, InstructionError> {
             let mut proof_stream = ProofStream::new();
             proof_stream.enqueue(ProofItem::MerkleRoot(root));
             let proof: Proof = proof_stream.into();
@@ -826,39 +891,37 @@ mod tests {
             let size_word_ptr = ram[&proof_iter_address];
             // Sanity: canonical MerkleRoot list-element size == 1 discriminant + 5 digest.
             assert_eq!(bfe!(6), ram[&size_word_ptr], "canonical size word");
-            if let Some(w) = corrupt_size_word_to {
+            if let Some(w) = size_word {
                 ram.insert(size_word_ptr, bfe!(w));
             }
 
             let nd = NonDeterminism::default().with_ram(ram);
-            let final_state = execute_with_terminal_state(
-                program.clone(),
-                &[],
-                &init.stack,
-                &nd,
-                Some(Tip5::init()),
-            )
-            .unwrap();
-            final_state.sponge.unwrap()
+            execute_with_terminal_state(program.clone(), &[], &init.stack, &nd, Some(Tip5::init()))
         };
+
+        let sponge = |root, size_word| run(root, size_word).unwrap().sponge.unwrap().state;
 
         let root_a = Digest::new([bfe!(1), bfe!(2), bfe!(3), bfe!(4), bfe!(5)]);
         let root_b = Digest::new([bfe!(9), bfe!(9), bfe!(9), bfe!(9), bfe!(9)]);
 
-        // 1. Honest size word: distinct roots => distinct transcripts (binding works).
+        // 1. Binding: distinct roots => distinct transcripts (honest encoding).
         assert_ne!(
-            run(root_a, None).state,
-            run(root_b, None).state,
+            sponge(root_a, None),
+            sponge(root_b, None),
             "honest encoding must bind the Merkle root"
         );
 
-        // 2. Corrupted size word (1): distinct roots => IDENTICAL transcripts.
-        //    The root is excluded from Fiat-Shamir => binding break.
-        assert_eq!(
-            run(root_a, Some(1)).state,
-            run(root_b, Some(1)).state,
-            "size word = 1 must exclude the Merkle root from the transcript"
-        );
+        // 2. Non-malleability + absorb fix: any non-canonical size word (the old
+        //    binding-break primitive used `1`) is now rejected, so the verdict
+        //    depends on this field element. Covers under-, exact-payload-, and
+        //    over-sized lies.
+        for bad in [0, 1, 5, 7, 100] {
+            let result = run(root_a, Some(bad));
+            assert!(
+                matches!(result, Err(InstructionError::AssertionFailed(_))),
+                "non-canonical size word {bad} must be rejected, got {result:?}"
+            );
+        }
     }
 
     /// Helps testing dequeuing multiple items.
