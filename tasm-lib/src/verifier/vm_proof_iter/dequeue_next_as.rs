@@ -801,6 +801,66 @@ mod tests {
         dequeue_next_as.test_rust_equivalence(initial_state);
     }
 
+    /// PoC for the audit finding: the Fiat-Shamir absorb length for a
+    /// *statically*-sized proof item is read from the prover-controlled
+    /// in-memory size word and never checked against the canonical size.
+    /// A malicious prover can set it to 1 so that only the (constant)
+    /// discriminant is absorbed and the committed Merkle root is excluded
+    /// from the transcript.
+    #[macro_rules_attr::apply(test)]
+    fn poc_static_fs_item_absorb_length_is_unbound() {
+        let dequeue = DequeueNextAs::new(ProofItemVariant::MerkleRoot);
+        let program = Program::new(&dequeue.link_for_isolated_run());
+
+        // Run the snippet over a single MerkleRoot item, optionally corrupting
+        // the item's size word, and return the terminal Fiat-Shamir sponge.
+        let run = |root: Digest, corrupt_size_word_to: Option<u64>| -> Tip5 {
+            let mut proof_stream = ProofStream::new();
+            proof_stream.enqueue(ProofItem::MerkleRoot(root));
+            let proof: Proof = proof_stream.into();
+            let proof_ptr = bfe!(0);
+            let init = dequeue.initial_state_from_proof_and_address(proof, proof_ptr);
+
+            let mut ram = init.nondeterminism.ram.clone();
+            let proof_iter_address = *init.stack.last().unwrap();
+            let size_word_ptr = ram[&proof_iter_address];
+            // Sanity: canonical MerkleRoot list-element size == 1 discriminant + 5 digest.
+            assert_eq!(bfe!(6), ram[&size_word_ptr], "canonical size word");
+            if let Some(w) = corrupt_size_word_to {
+                ram.insert(size_word_ptr, bfe!(w));
+            }
+
+            let nd = NonDeterminism::default().with_ram(ram);
+            let final_state = execute_with_terminal_state(
+                program.clone(),
+                &[],
+                &init.stack,
+                &nd,
+                Some(Tip5::init()),
+            )
+            .unwrap();
+            final_state.sponge.unwrap()
+        };
+
+        let root_a = Digest::new([bfe!(1), bfe!(2), bfe!(3), bfe!(4), bfe!(5)]);
+        let root_b = Digest::new([bfe!(9), bfe!(9), bfe!(9), bfe!(9), bfe!(9)]);
+
+        // 1. Honest size word: distinct roots => distinct transcripts (binding works).
+        assert_ne!(
+            run(root_a, None).state,
+            run(root_b, None).state,
+            "honest encoding must bind the Merkle root"
+        );
+
+        // 2. Corrupted size word (1): distinct roots => IDENTICAL transcripts.
+        //    The root is excluded from Fiat-Shamir => binding break.
+        assert_eq!(
+            run(root_a, Some(1)).state,
+            run(root_b, Some(1)).state,
+            "size word = 1 must exclude the Merkle root from the transcript"
+        );
+    }
+
     /// Helps testing dequeuing multiple items.
     #[derive(Debug, Default, Clone, Eq, PartialEq)]
     struct TestHelperDequeueMultipleAs {
