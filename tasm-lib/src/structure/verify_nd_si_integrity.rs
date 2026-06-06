@@ -7,6 +7,29 @@ use crate::prelude::*;
 
 /// Verify size-indicator integrity of preloaded data, return size.
 ///
+/// This snippet has a deliberately narrow responsibility. It certifies that the
+/// embedded *size indicators* of a `BFieldCodec`-encoded `T` in non-deterministic
+/// memory are mutually consistent — every field and element has the size it claims
+/// — so that subsequent `get_field`/`destructure` accesses land on the correct
+/// offsets. It additionally checks that the entire structure lies within the
+/// non-deterministic region (a valid `u32` address range).
+///
+/// It deliberately does **not** validate *leaf-value canonicality*. A value whose
+/// length is fixed by its type — e.g. a `u32`, a `bool`, or the coefficients of a
+/// `Polynomial` — is accepted regardless of its contents: a `u32` word may hold a
+/// value `>= 2^32`, a `bool` word a value other than `0`/`1`, and so on. Such a
+/// word still occupies the correct number of memory cells, which is all that
+/// "size-indicator integrity" concerns. This is therefore strictly *weaker* than
+/// `BFieldCodec::decode`, which also range-checks leaves; **passing this gate does
+/// not imply the data is a canonical encoding of `T`.**
+///
+/// A caller that consumes a leaf as an in-range value is responsible for enforcing
+/// that range itself. Most consumers do so for free — the u32/arithmetic
+/// instructions (`lt`, `split`, `pop_count`, …) crash on non-canonical words — but
+/// a raw word used as a hash preimage, an equality operand, or a `skiz`/`assert`
+/// discriminant does not self-defend. Treating "`VerifyNdSiIntegrity` passed" as
+/// "the witness is canonical" is a mistake.
+///
 /// Crashes the VM if the structure in question is not entirely contained within
 /// the non-deterministic section of memory as defined in the memory layout.
 #[derive(Clone, Debug)]
@@ -113,7 +136,13 @@ mod tests {
             stack: &mut Vec<BFieldElement>,
             memory: &HashMap<BFieldElement, BFieldElement>,
         ) -> Result<(), RustShadowError> {
-            // If the type can be decoded then it must have valid size indicators
+            // A successful decode implies valid size indicators, so `decode` is
+            // used here as a convenient proxy for the property this snippet
+            // checks. Note it is *stricter* than the snippet (it also range-checks
+            // leaf values; see the struct docs), so it would reject some
+            // non-canonical inputs the TASM accepts. The test harness only ever
+            // generates canonical objects (via `Arbitrary`), so the two never
+            // diverge in practice — do not "fix" the snippet to match this.
             let pointer = stack.pop().ok_or(RustShadowError::StackUnderflow)?;
             let obj = T::decode_from_memory(memory, pointer)
                 .map_err(|_| RustShadowError::DecodingError)?;
