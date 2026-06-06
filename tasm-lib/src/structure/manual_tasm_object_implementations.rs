@@ -67,6 +67,17 @@ where
                 read_mem 1
                 // _ list_len *elem[0]
 
+                /* Bound `list_len` before the (mod-p) multiply below. Without
+                   this, a prover could pick `list_len = (S-1)*elem_size^{-1} mod p`
+                   so that `list_len * elem_size + 1` wraps to a small in-bounds
+                   `S`, passing both size-indicator checks while claiming ~2^64
+                   elements that are not in the validated region. */
+                push {<Self as TasmObject>::MAX_OFFSET}
+                dup 2
+                lt
+                assert error_id 212
+                // _ list_len *elem[0]
+
                 {&T::compute_size_and_assert_valid_size_indicator(library)}
                 // _ list_len elem_size
 
@@ -441,6 +452,16 @@ impl TasmObject for Polynomial<'static, XFieldElement> {
             dup 1
             lt
             assert
+            // _ list_length field_size
+
+            /* Bound `list_length` before the (mod-p) multiply below, for the
+               same reason as the static-element `Vec` case: otherwise a prover
+               could choose `list_length = (S-1)*EXTENSION_DEGREE^{-1} mod p` to
+               wrap the product to a small in-bounds value. */
+            push {Self::MAX_OFFSET}
+            dup 2
+            lt
+            assert error_id 213
             // _ list_length field_size
 
             pick 1

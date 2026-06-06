@@ -407,6 +407,79 @@ mod tests {
     test_case! { fn mutator_set_accumulator for MutatorSetAccumulatorLookalike }
     test_case! { fn primitive_witness for PrimitiveWitnessLookalike }
     test_case! { fn mmr_successor_proof for MmrSuccessorProof }
+
+    mod modular_wrap_on_static_elem_vec_len {
+        use super::*;
+        use crate::execute_with_terminal_state;
+        use crate::structure::tasm_object::DEFAULT_MAX_DYN_FIELD_SIZE;
+
+        #[derive(Debug, Clone, TasmObject, BFieldCodec)]
+        struct OnlyDigestVec {
+            #[allow(dead_code)]
+            digests: Vec<Digest>,
+        }
+
+        /// Regression test for the audit finding: `VerifyNdSiIntegrity` used to
+        /// accept a static-element `Vec` whose length word is ~2^64 while only a
+        /// tiny region was validated. The length is multiplied by the (static)
+        /// element size with the field `mul`; without bounding it a prover could
+        /// pick `list_len = (field_size - 1) * elem_size^{-1} mod p` to satisfy
+        /// both id-180 (`field_size < MAX_OFFSET`) and id-181
+        /// (`calculated == field_size`). The fix bounds `list_len < MAX_OFFSET`
+        /// before the multiply (`error_id 212`), making the wrap impossible.
+        #[macro_rules_attr::apply(test)]
+        fn si_integrity_rejects_overlong_static_elem_vec() {
+            let snippet = VerifyNdSiIntegrity::<OnlyDigestVec>::default();
+            let program = Program::new(&snippet.link_for_isolated_run());
+
+            let struct_ptr = bfe!(4);
+            let elem_size = bfe!(Digest::LEN as u64); // 5
+
+            let run = |field_si: BFieldElement, list_len: BFieldElement| {
+                let mut ram = HashMap::new();
+                ram.insert(struct_ptr, field_si); // size indicator of `digests`
+                ram.insert(struct_ptr + bfe!(1), list_len); // Vec length word
+                let nd = NonDeterminism::default().with_ram(ram);
+                let stack = [snippet.init_stack_for_isolated_run(), vec![struct_ptr]].concat();
+                execute_with_terminal_state(program.clone(), &[], &stack, &nd, None)
+            };
+
+            // The binding-break primitive: a wrapped length that satisfies the
+            // modular identity yet dwarfs the validated region.
+            let field_si = bfe!(2);
+            let wrapped_len = (field_si - bfe!(1)) * elem_size.inverse();
+            assert_eq!(field_si, wrapped_len * elem_size + bfe!(1));
+            assert!(wrapped_len.value() > u32::MAX as u64);
+
+            // Post-fix: a length exceeding `u32::MAX` is caught by the `lt`
+            // instruction's u32 decomposition before the multiply.
+            let result = run(field_si, wrapped_len);
+            assert!(
+                matches!(
+                    result,
+                    Err(InstructionError::OpStackError(
+                        OpStackError::FailedU32Conversion(_)
+                    ))
+                ),
+                "overlong static-element Vec length must be rejected, got {result:?}"
+            );
+
+            // A length that is a valid u32 but >= MAX_OFFSET is caught by the
+            // explicit bound (`error_id 212`). `MAX_OFFSET` itself fails the
+            // strict `<` check.
+            let max_offset = bfe!(u64::from(DEFAULT_MAX_DYN_FIELD_SIZE));
+            let result = run(bfe!(2), max_offset);
+            assert!(
+                matches!(result, Err(InstructionError::AssertionFailed(_))),
+                "static-element Vec length >= MAX_OFFSET must be rejected, got {result:?}"
+            );
+
+            // Happy path: an honest single-`Digest` vector (field_si = 6, len = 1)
+            // is still accepted and reports the correct struct size (7).
+            let honest = run(bfe!(6), bfe!(1)).unwrap();
+            assert_eq!(bfe!(7), *honest.op_stack.stack.last().unwrap());
+        }
+    }
 }
 
 #[cfg(test)]
