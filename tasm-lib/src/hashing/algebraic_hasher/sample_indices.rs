@@ -7,6 +7,17 @@ use crate::prelude::*;
 
 /// Sample n pseudorandom integers between 0 and k. It does this by squeezing the sponge. It is the
 /// caller's responsibility to ensure that the sponge is initialized to the right state.
+///
+/// **Precondition: `upper_bound` must be a power of two.** Each squeezed word is
+/// reduced into range with a bitwise `AND (upper_bound - 1)`, which equals
+/// `word mod upper_bound` only when `upper_bound` is a power of two. For any other
+/// `upper_bound` the mask is not contiguous: the snippet does **not** crash, but it
+/// silently returns biased indices drawn from `[0, 2^floor(log2(upper_bound)))`
+/// rather than a uniform sample over `[0, upper_bound)`. This mirrors the reduction
+/// in `Tip5::sample_indices`, which `assert`s the same precondition; this snippet
+/// deliberately omits that assertion (every in-tree caller passes a power-of-two
+/// bound — e.g. the FRI domain length or the mutator-set window size), so the
+/// caller is responsible for upholding it. Uniformity is not guaranteed otherwise.
 #[derive(Debug, Default, Copy, Clone, Eq, PartialEq, Hash)]
 pub struct SampleIndices;
 
