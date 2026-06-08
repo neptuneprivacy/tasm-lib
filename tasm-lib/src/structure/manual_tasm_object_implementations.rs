@@ -8,6 +8,10 @@ use twenty_first::prelude::*;
 
 use super::tasm_object::Result;
 use crate::prelude::*;
+use crate::structure::tasm_object::DEFAULT_MAX_DYN_FIELD_SIZE;
+
+const VEC_LEN_EXCEEDS_MAX: i128 = 212;
+const POLYNOMIAL_LEN_EXCEEDS_MAX: i128 = 213;
 
 impl<const N: usize, T> TasmObject for [T; N]
 where
@@ -60,11 +64,34 @@ where
     fn compute_size_and_assert_valid_size_indicator(
         library: &mut Library,
     ) -> Vec<LabelledInstruction> {
-        if T::static_length().is_some() {
+        if let Some(static_size) = T::static_length() {
+            // Assert length is bounded such that `len * elem_size` cannot
+            // wrap around modulus p.
+            let assert_len_is_u32 = if static_size == 1 {
+                // _ nop because check is not needed, and because it would
+                // change downstream program hashes in committed-to UTXOs.
+                triton_asm!()
+            } else {
+                triton_asm!(
+                    // _ list_len g
+
+                    push {DEFAULT_MAX_DYN_FIELD_SIZE}
+                    dup 2
+                    lt
+                    // _ list_len g (max > list_len)
+
+                    assert error_id {VEC_LEN_EXCEEDS_MAX}
+                    // _ list_len g
+                )
+            };
+
             return triton_asm!(
                 // _ *list_len
 
                 read_mem 1
+                // _ list_len *elem[0]
+
+                {&assert_len_is_u32}
                 // _ list_len *elem[0]
 
                 {&T::compute_size_and_assert_valid_size_indicator(library)}
@@ -427,6 +454,19 @@ impl TasmObject for Polynomial<'static, XFieldElement> {
     }
 
     fn compute_size_and_assert_valid_size_indicator(_: &mut Library) -> Vec<LabelledInstruction> {
+        // Assert length is bounded such that `len * 3` cannot
+        // wrap around modulus p.
+        let assert_len_is_u32 = triton_asm!(
+            // _ list_len g
+
+            push {DEFAULT_MAX_DYN_FIELD_SIZE}
+            dup 2
+            lt
+            // _ list_len g (max > list_len)
+
+            assert error_id {POLYNOMIAL_LEN_EXCEEDS_MAX}
+        );
+
         triton_asm!(
             // _ *field_size
 
@@ -436,6 +476,8 @@ impl TasmObject for Polynomial<'static, XFieldElement> {
             read_mem 2
             pop 1
             // _ list_length field_size
+
+            {&assert_len_is_u32}
 
             push {Self::MAX_OFFSET}
             dup 1
