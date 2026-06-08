@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+
 use strum::Display;
 use triton_vm::prelude::*;
 
