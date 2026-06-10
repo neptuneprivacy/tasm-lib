@@ -131,11 +131,11 @@ impl BasicSnippet for SplitOff {
     fn sign_offs(&self) -> HashMap<Reviewer, SignOffFingerprint> {
         let mut sign_offs = HashMap::new();
         match self.element_type.stack_size() {
-            1 => _ = sign_offs.insert(Reviewer("ferdinand"), 0x1e0ba22af4313058.into()),
-            2 => _ = sign_offs.insert(Reviewer("ferdinand"), 0x1213c06246c8d536.into()),
-            3 => _ = sign_offs.insert(Reviewer("ferdinand"), 0xcc176a741f258a1b.into()),
-            4 => _ = sign_offs.insert(Reviewer("ferdinand"), 0x98b6a28ab6be5175.into()),
-            5 => _ = sign_offs.insert(Reviewer("ferdinand"), 0x60f106bea20cd03c.into()),
+            1 => _ = sign_offs.insert(Reviewer("ferdinand"), 0x301ba5ca049803e8.into()),
+            2 => _ = sign_offs.insert(Reviewer("ferdinand"), 0x2a21c2e699d49de0.into()),
+            3 => _ = sign_offs.insert(Reviewer("ferdinand"), 0x6fb3ad81ae549b3b.into()),
+            4 => _ = sign_offs.insert(Reviewer("ferdinand"), 0xe996211d08113486.into()),
+            5 => _ = sign_offs.insert(Reviewer("ferdinand"), 0xf02fbb12968e399b.into()),
             _ => (),
         }
 

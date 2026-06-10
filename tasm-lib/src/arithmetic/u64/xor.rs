@@ -63,7 +63,7 @@ impl BasicSnippet for Xor {
 
     fn sign_offs(&self) -> HashMap<Reviewer, SignOffFingerprint> {
         let mut sign_offs = HashMap::new();
-        sign_offs.insert(Reviewer("ferdinand"), 0x72c3fab42b063e55.into());
+        sign_offs.insert(Reviewer("ferdinand"), 0xa460a1bb5a10d9bd.into());
         sign_offs
     }
 }

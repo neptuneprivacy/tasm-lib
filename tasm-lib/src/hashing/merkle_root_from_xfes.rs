@@ -201,7 +201,7 @@ impl BasicSnippet for MerkleRootFromXfes {
 
     fn sign_offs(&self) -> HashMap<Reviewer, SignOffFingerprint> {
         let mut sign_offs = HashMap::new();
-        sign_offs.insert(Reviewer("ferdinand"), 0x57f2e812e29b71b8.into());
+        sign_offs.insert(Reviewer("ferdinand"), 0x88ceafe08a1c4aae.into());
 
         sign_offs
     }
