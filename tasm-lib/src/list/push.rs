@@ -236,6 +236,6 @@ mod benches {
 
     #[macro_rules_attr::apply(test)]
     fn benchmark() {
-        ShadowedFunction::new(Push::new(DataType::Digest));
+        ShadowedFunction::new(Push::new(DataType::Digest)).bench();
     }
 }
