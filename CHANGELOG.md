@@ -3,6 +3,15 @@
 All notable changes are documented in this file.
 Lines marked “(!)” indicate a breaking change.
 
+## [4.0.0](https://github.com/TritonVM/tasm-lib/compare/v3.0.1..v4.0.0) - 2026-06-10
+
+### 🐛 Bug Fixes
+
+- *(bench)* Actually benchmark `list::push` ([4b4ff9ab](https://github.com/TritonVM/tasm-lib/commit/4b4ff9ab))
+
+### 📚 Documentation
+
+- De-allocate now-unused error IDs ([1e3cbcbb](https://github.com/TritonVM/tasm-lib/commit/1e3cbcbb))
 
 ## [3.0.1](https://github.com/TritonVM/tasm-lib/compare/v3.0.0..v3.0.1) - 2026-06-08
 
