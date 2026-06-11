@@ -25,6 +25,8 @@ pub struct DequeueNextAs {
 }
 
 impl DequeueNextAs {
+    const BAD_PROOF_ITEM_SIZE_INDICATOR_STATIC_SIZE_PAYLOAD: i128 = 620;
+
     pub fn new(proof_item: ProofItemVariant) -> Self {
         Self { proof_item }
     }
@@ -114,7 +116,7 @@ impl DequeueNextAs {
 
                 push {expected_item_size}
                 eq
-                assert error_id 304
+                assert error_id {Self::BAD_PROOF_ITEM_SIZE_INDICATOR_STATIC_SIZE_PAYLOAD}
                 // _ *proof_item_size
             };
         }
@@ -124,6 +126,7 @@ impl DequeueNextAs {
         triton_asm! {
             // _ *proof_item_size
 
+            /* Add 3: Skip proof_item_si, disc, payload_si (of field 0) */
             dup 0
             addi 3
             {&calculate_own_size}
@@ -172,10 +175,11 @@ impl DequeueNextAs {
         // For statically-sized items the absorb length must NOT be read from the
         // prover-controlled in-memory size word: doing so would let a malicious
         // prover shorten the absorb and exclude the committed payload (e.g. a
-        // Merkle root) from the Fiat-Shamir transcript. Absorb a fixed number of
-        // words instead — 1 (discriminant) + the static payload length — exactly
-        // the canonical encoding of the proof item. `assert_consistent_size_indicators`
-        // separately pins the size word, so the encoding stays non-malleable.
+        // Merkle root) from the Fiat-Shamir transcript. Absorb a fixed number
+        // of words instead — 1 (discriminant) + the static payload length —
+        // exactly the canonical encoding of the proof item.
+        //`assert_consistent_size_indicators` separately pins the size word,
+        // so the encoding stays non-malleable.
         if let Some(static_length) = self.proof_item.payload_static_length() {
             let absorb_length = static_length + 1;
             let absorb_multiple = library.import(Box::new(AbsorbMultiple));
@@ -452,8 +456,7 @@ mod tests {
             Ok(self.public_output())
         }
 
-        /// Mirror the in-TASM static-item size-word check (`error_id 304`): for
-        /// statically-sized items the list-element size word must equal its only
+        /// Mirror the in-TASM static-item size-word check: for         /// statically-sized items the list-element size word must equal its only
         /// canonical value, `1 (discriminant) + payload`.
         fn assert_static_size_word_is_canonical(&self) -> Result<(), RustShadowError> {
             let Some(static_length) = self.dequeue_next_as.proof_item.payload_static_length()
@@ -868,8 +871,8 @@ mod tests {
     /// the transcript — a Fiat-Shamir binding break.
     ///
     /// The fix is twofold: the absorb length is now a compile-time constant
-    /// (`static_length + 1`), and the size word is asserted canonical
-    /// (`error_id 304`) so the proof encoding is not malleable in this field.
+    /// (`static_length + 1`), and the size word is asserted canonical so the
+    /// proof encoding is not malleable in this field.
     /// This test pins both properties: distinct roots always produce distinct
     /// transcripts, and any non-canonical size word is rejected outright.
     #[macro_rules_attr::apply(test)]
@@ -879,7 +882,9 @@ mod tests {
 
         // Run the snippet over a single MerkleRoot item, optionally setting the
         // item's size word to a (possibly non-canonical) value.
-        let run = |root: Digest, size_word: Option<u64>| -> Result<VMState, InstructionError> {
+        let run = |root: Digest,
+                   size_indicator_overwrite: Option<u64>|
+         -> Result<VMState, InstructionError> {
             let mut proof_stream = ProofStream::new();
             proof_stream.enqueue(ProofItem::MerkleRoot(root));
             let proof: Proof = proof_stream.into();
@@ -891,7 +896,7 @@ mod tests {
             let size_word_ptr = ram[&proof_iter_address];
             // Sanity: canonical MerkleRoot list-element size == 1 discriminant + 5 digest.
             assert_eq!(bfe!(6), ram[&size_word_ptr], "canonical size word");
-            if let Some(w) = size_word {
+            if let Some(w) = size_indicator_overwrite {
                 ram.insert(size_word_ptr, bfe!(w));
             }
 
@@ -899,16 +904,16 @@ mod tests {
             execute_with_terminal_state(program.clone(), &[], &init.stack, &nd, Some(Tip5::init()))
         };
 
-        let sponge = |root, size_word| run(root, size_word).unwrap().sponge.unwrap().state;
+        let sponge = |root| run(root, None).unwrap().sponge.unwrap().state;
 
         let root_a = Digest::new([bfe!(1), bfe!(2), bfe!(3), bfe!(4), bfe!(5)]);
         let root_b = Digest::new([bfe!(9), bfe!(9), bfe!(9), bfe!(9), bfe!(9)]);
 
         // 1. Binding: distinct roots => distinct transcripts (honest encoding).
         assert_ne!(
-            sponge(root_a, None),
-            sponge(root_b, None),
-            "honest encoding must bind the Merkle root"
+            sponge(root_a),
+            sponge(root_b),
+            "honest encoding must bind Merkle root"
         );
 
         // 2. Non-malleability + absorb fix: any non-canonical size word (the old
@@ -917,9 +922,13 @@ mod tests {
         //    over-sized lies.
         for bad in [0, 1, 5, 7, 100] {
             let result = run(root_a, Some(bad));
-            assert!(
-                matches!(result, Err(InstructionError::AssertionFailed(_))),
-                "non-canonical size word {bad} must be rejected, got {result:?}"
+            let Err(InstructionError::AssertionFailed(assert_err)) = result else {
+                panic!("Must fail with assertion error");
+            };
+
+            assert_eq!(
+                Some(DequeueNextAs::BAD_PROOF_ITEM_SIZE_INDICATOR_STATIC_SIZE_PAYLOAD),
+                assert_err.id
             );
         }
     }

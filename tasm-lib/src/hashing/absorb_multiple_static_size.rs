@@ -102,10 +102,11 @@ impl BasicSnippet for AbsorbMultipleStaticSize {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use crate::test_prelude::*;
     use tasm_lib::USIZE_TO_U64_ERR;
     use twenty_first::prelude::Sponge;
+
+    use super::*;
+    use crate::test_prelude::*;
 
     impl Procedure for AbsorbMultipleStaticSize {
         fn rust_shadow(

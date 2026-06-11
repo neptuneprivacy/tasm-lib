@@ -8,6 +8,10 @@ use twenty_first::prelude::*;
 
 use super::tasm_object::Result;
 use crate::prelude::*;
+use crate::structure::tasm_object::DEFAULT_MAX_DYN_FIELD_SIZE;
+
+const VEC_LEN_EXCEEDS_MAX: i128 = 212;
+const POLYNOMIAL_LEN_EXCEEDS_MAX: i128 = 213;
 
 impl<const N: usize, T> TasmObject for [T; N]
 where
@@ -60,22 +64,34 @@ where
     fn compute_size_and_assert_valid_size_indicator(
         library: &mut Library,
     ) -> Vec<LabelledInstruction> {
-        if T::static_length().is_some() {
+        if let Some(static_size) = T::static_length() {
+            // Assert length is bounded such that `len * elem_size` cannot
+            // wrap around modulus p.
+            let assert_len_is_u32 = if static_size == 1 {
+                // _ nop because check is not needed, and because it would
+                // change downstream program hashes in committed-to UTXOs.
+                triton_asm!()
+            } else {
+                triton_asm!(
+                    // _ list_len g
+
+                    push {DEFAULT_MAX_DYN_FIELD_SIZE}
+                    dup 2
+                    lt
+                    // _ list_len g (max > list_len)
+
+                    assert error_id {VEC_LEN_EXCEEDS_MAX}
+                    // _ list_len g
+                )
+            };
+
             return triton_asm!(
                 // _ *list_len
 
                 read_mem 1
                 // _ list_len *elem[0]
 
-                /* Bound `list_len` before the (mod-p) multiply below. Without
-                   this, a prover could pick `list_len = (S-1)*elem_size^{-1} mod p`
-                   so that `list_len * elem_size + 1` wraps to a small in-bounds
-                   `S`, passing both size-indicator checks while claiming ~2^64
-                   elements that are not in the validated region. */
-                push {<Self as TasmObject>::MAX_OFFSET}
-                dup 2
-                lt
-                assert error_id 212
+                {&assert_len_is_u32}
                 // _ list_len *elem[0]
 
                 {&T::compute_size_and_assert_valid_size_indicator(library)}
@@ -438,6 +454,19 @@ impl TasmObject for Polynomial<'static, XFieldElement> {
     }
 
     fn compute_size_and_assert_valid_size_indicator(_: &mut Library) -> Vec<LabelledInstruction> {
+        // Assert length is bounded such that `len * 3` cannot
+        // wrap around modulus p.
+        let assert_len_is_u32 = triton_asm!(
+            // _ list_len g
+
+            push {DEFAULT_MAX_DYN_FIELD_SIZE}
+            dup 2
+            lt
+            // _ list_len g (max > list_len)
+
+            assert error_id {POLYNOMIAL_LEN_EXCEEDS_MAX}
+        );
+
         triton_asm!(
             // _ *field_size
 
@@ -448,20 +477,12 @@ impl TasmObject for Polynomial<'static, XFieldElement> {
             pop 1
             // _ list_length field_size
 
+            {&assert_len_is_u32}
+
             push {Self::MAX_OFFSET}
             dup 1
             lt
             assert
-            // _ list_length field_size
-
-            /* Bound `list_length` before the (mod-p) multiply below, for the
-               same reason as the static-element `Vec` case: otherwise a prover
-               could choose `list_length = (S-1)*EXTENSION_DEGREE^{-1} mod p` to
-               wrap the product to a small in-bounds value. */
-            push {Self::MAX_OFFSET}
-            dup 2
-            lt
-            assert error_id 213
             // _ list_length field_size
 
             pick 1
@@ -484,7 +505,9 @@ impl TasmObject for Polynomial<'static, XFieldElement> {
         iterator.next().ok_or(BFieldCodecError::SequenceTooShort)?;
         let coefficients = *Vec::<XFieldElement>::decode_iter(iterator)?;
         if coefficients.last().is_some_and(|c| c.is_zero()) {
-            return Err(PolynomialBFieldCodecError::TrailingZerosInPolynomialEncoding)?;
+            return Err(Box::new(
+                PolynomialBFieldCodecError::TrailingZerosInPolynomialEncoding,
+            ));
         }
 
         Ok(Box::new(Self::new(coefficients)))
