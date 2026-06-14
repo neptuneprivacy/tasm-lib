@@ -3,6 +3,29 @@
 All notable changes are documented in this file.
 Lines marked “(!)” indicate a breaking change.
 
+## [5.0.0](https://github.com/TritonVM/tasm-lib/compare/v4.0.0..v5.0.0) - 2026-06-14
+
+### ⚙️ Miscellaneous
+
+- (!) Update Triton VM to version 5.0.0
+
+## [4.0.0](https://github.com/TritonVM/tasm-lib/compare/v3.0.0..v4.0.0) - 2026-06-11
+
+### 🐛 Bug Fixes
+
+- Update triton-vm to version 4.0.0 and adjust benchmark values ([487d4404](https://github.com/TritonVM/tasm-lib/commit/487d4404))
+- Range-check u128 add/sub operand limbs (defense-in-depth) ([36938d9d](https://github.com/TritonVM/tasm-lib/commit/36938d9d))
+- Bound static-element Vec/Polynomial length before mod-p multiply ([775c9cf4](https://github.com/TritonVM/tasm-lib/commit/775c9cf4))
+- Bind static proof-item size word in Fiat-Shamir absorb ([5d209009](https://github.com/TritonVM/tasm-lib/commit/5d209009))
+
+### 📚 Documentation
+
+- Clarify VerifyNdSiIntegrity's responsibility ([0624e86a](https://github.com/TritonVM/tasm-lib/commit/0624e86a))
+
+### ✅ Testing
+
+- Add regression PoC for unbound FS absorb length on static proof items ([79e11aac](https://github.com/TritonVM/tasm-lib/commit/79e11aac))
+
 ## [3.0.0](https://github.com/TritonVM/tasm-lib/compare/v2.0.0..v3.0.0) - 2026-05-13
 
 ### ✨ Features
