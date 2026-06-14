@@ -121,10 +121,10 @@ impl BasicSnippet for Pop {
     fn sign_offs(&self) -> HashMap<Reviewer, SignOffFingerprint> {
         let mut sign_offs = HashMap::new();
         match self.element_type.stack_size() {
-            1 => _ = sign_offs.insert(Reviewer("ferdinand"), 0x3d7287a7a71d27d0.into()),
-            2 => _ = sign_offs.insert(Reviewer("ferdinand"), 0x87273e433f2d09bf.into()),
-            3 => _ = sign_offs.insert(Reviewer("ferdinand"), 0xd502e59ed7251525.into()),
-            5 => _ = sign_offs.insert(Reviewer("ferdinand"), 0xf8ed5295f3d8a9c7.into()),
+            1 => _ = sign_offs.insert(Reviewer("ferdinand"), 0x8188717a45b71987.into()),
+            2 => _ = sign_offs.insert(Reviewer("ferdinand"), 0x1f6fe8be52fd07dc.into()),
+            3 => _ = sign_offs.insert(Reviewer("ferdinand"), 0x829a283f4d5638f1.into()),
+            5 => _ = sign_offs.insert(Reviewer("ferdinand"), 0x1fd1aae983f6c61f.into()),
             _ => (),
         }
 
