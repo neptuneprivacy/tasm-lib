@@ -73,7 +73,7 @@ impl BasicSnippet for Div2 {
 
     fn sign_offs(&self) -> HashMap<Reviewer, SignOffFingerprint> {
         let mut sign_offs = HashMap::new();
-        sign_offs.insert(Reviewer("ferdinand"), 0xe1d2ecf7b9627635.into());
+        sign_offs.insert(Reviewer("ferdinand"), 0xe1ee4603b150be04.into());
         sign_offs
     }
 }

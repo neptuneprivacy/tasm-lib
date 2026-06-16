@@ -81,7 +81,7 @@ impl BasicSnippet for Lt {
 
     fn sign_offs(&self) -> HashMap<Reviewer, SignOffFingerprint> {
         let mut sign_offs = HashMap::new();
-        sign_offs.insert(Reviewer("ferdinand"), 0x207bf5ad2cc8af4c.into());
+        sign_offs.insert(Reviewer("ferdinand"), 0x852e399e5e94eb2a.into());
         sign_offs
     }
 }

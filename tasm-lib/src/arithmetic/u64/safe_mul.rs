@@ -120,7 +120,7 @@ impl BasicSnippet for SafeMul {
 
     fn sign_offs(&self) -> HashMap<Reviewer, SignOffFingerprint> {
         let mut sign_offs = HashMap::new();
-        sign_offs.insert(Reviewer("ferdinand"), 0x7f92d99f9d39abdc.into());
+        sign_offs.insert(Reviewer("ferdinand"), 0x9655a6ac2abe3491.into());
         sign_offs
     }
 }

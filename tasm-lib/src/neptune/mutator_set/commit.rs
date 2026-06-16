@@ -52,7 +52,7 @@ impl BasicSnippet for Commit {
 
     fn sign_offs(&self) -> HashMap<Reviewer, SignOffFingerprint> {
         let mut sign_offs = HashMap::new();
-        sign_offs.insert(Reviewer("ferdinand"), 0x9d90f5215c508fd0.into());
+        sign_offs.insert(Reviewer("ferdinand"), 0xc47c69d07f89e478.into());
         sign_offs
     }
 }

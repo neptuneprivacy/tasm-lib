@@ -97,7 +97,7 @@ impl BasicSnippet for HornerEvaluation {
     fn sign_offs(&self) -> HashMap<Reviewer, SignOffFingerprint> {
         let mut sign_offs = HashMap::new();
         if self.num_coefficients == 4 {
-            sign_offs.insert(Reviewer("ferdinand"), 0xf2127fe70843ba82.into());
+            sign_offs.insert(Reviewer("ferdinand"), 0xefe7a00940e4463.into());
         }
 
         sign_offs

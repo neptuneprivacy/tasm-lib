@@ -63,7 +63,7 @@ impl BasicSnippet for WrappingSub {
 
     fn sign_offs(&self) -> HashMap<Reviewer, SignOffFingerprint> {
         let mut sign_offs = HashMap::new();
-        sign_offs.insert(Reviewer("ferdinand"), 0xac7893f55eb83bb7.into());
+        sign_offs.insert(Reviewer("ferdinand"), 0x9c3d2eb922c4fb5b.into());
         sign_offs
     }
 }

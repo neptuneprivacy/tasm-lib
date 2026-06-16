@@ -198,7 +198,7 @@ impl BasicSnippet for MerkleRoot {
 
     fn sign_offs(&self) -> HashMap<Reviewer, SignOffFingerprint> {
         let mut sign_offs = HashMap::new();
-        sign_offs.insert(Reviewer("ferdinand"), 0x47982eea41b10f18.into());
+        sign_offs.insert(Reviewer("ferdinand"), 0x626c9910c1509948.into());
         sign_offs
     }
 }

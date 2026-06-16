@@ -87,7 +87,7 @@ impl BasicSnippet for TrailingZeros {
 
     fn sign_offs(&self) -> HashMap<Reviewer, SignOffFingerprint> {
         let mut sign_offs = HashMap::new();
-        sign_offs.insert(Reviewer("ferdinand"), 0x23cd30a04c295273.into());
+        sign_offs.insert(Reviewer("ferdinand"), 0xc956e770736d1ed2.into());
         sign_offs
     }
 }

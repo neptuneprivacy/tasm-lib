@@ -62,7 +62,7 @@ impl BasicSnippet for SafeAdd {
 
     fn sign_offs(&self) -> HashMap<Reviewer, SignOffFingerprint> {
         let mut sign_offs = HashMap::new();
-        sign_offs.insert(Reviewer("ferdinand"), 0x8c7db15339a86d92.into());
+        sign_offs.insert(Reviewer("ferdinand"), 0xf21a7b4e42d6af10.into());
         sign_offs
     }
 }

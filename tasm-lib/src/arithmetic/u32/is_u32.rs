@@ -52,7 +52,7 @@ impl BasicSnippet for IsU32 {
 
     fn sign_offs(&self) -> HashMap<Reviewer, SignOffFingerprint> {
         let mut sign_offs = HashMap::new();
-        sign_offs.insert(Reviewer("ferdinand"), 0x57b5328dadd33a5.into());
+        sign_offs.insert(Reviewer("ferdinand"), 0xb344d2a7b444026f.into());
         sign_offs
     }
 }

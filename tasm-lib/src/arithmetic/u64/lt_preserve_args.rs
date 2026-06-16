@@ -85,7 +85,7 @@ impl BasicSnippet for LtPreserveArgs {
 
     fn sign_offs(&self) -> HashMap<Reviewer, SignOffFingerprint> {
         let mut sign_offs = HashMap::new();
-        sign_offs.insert(Reviewer("ferdinand"), 0xe291debfcf13d4ec.into());
+        sign_offs.insert(Reviewer("ferdinand"), 0x6df11d6331c818ce.into());
         sign_offs
     }
 }

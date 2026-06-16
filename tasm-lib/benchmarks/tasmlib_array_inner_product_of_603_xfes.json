@@ -1,23 +1,23 @@
 [
   {
-    "name": "tasmlib_array_inner_product_of_599_xfes",
+    "name": "tasmlib_array_inner_product_of_603_xfes",
     "benchmark_result": {
-      "clock_cycle_count": 608,
+      "clock_cycle_count": 612,
       "hash_table_height": 372,
       "u32_table_height": 0,
       "op_stack_table_height": 5,
-      "ram_table_height": 3594
+      "ram_table_height": 3618
     },
     "case": "CommonCase"
   },
   {
-    "name": "tasmlib_array_inner_product_of_599_xfes",
+    "name": "tasmlib_array_inner_product_of_603_xfes",
     "benchmark_result": {
-      "clock_cycle_count": 608,
+      "clock_cycle_count": 612,
       "hash_table_height": 372,
       "u32_table_height": 0,
       "op_stack_table_height": 5,
-      "ram_table_height": 3594
+      "ram_table_height": 3618
     },
     "case": "WorstCase"
   }

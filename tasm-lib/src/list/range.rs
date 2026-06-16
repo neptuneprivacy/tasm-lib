@@ -93,7 +93,7 @@ impl BasicSnippet for Range {
 
     fn sign_offs(&self) -> HashMap<Reviewer, SignOffFingerprint> {
         let mut sign_offs = HashMap::new();
-        sign_offs.insert(Reviewer("ferdinand"), 0xff3586a512bc048b.into());
+        sign_offs.insert(Reviewer("ferdinand"), 0x99a8a779a10243e4.into());
         sign_offs
     }
 }
