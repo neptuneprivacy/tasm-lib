@@ -162,8 +162,6 @@ impl BasicSnippet for InnerProductOfThreeRowsWithWeights {
 
 #[cfg(test)]
 mod tests {
-    use triton_vm::prelude::*;
-
     use super::*;
     use crate::rust_shadowing_helper_functions::array::array_from_memory;
     use crate::rust_shadowing_helper_functions::array::insert_random_array;
