@@ -60,7 +60,7 @@ impl BasicSnippet for Or {
 
     fn sign_offs(&self) -> HashMap<Reviewer, SignOffFingerprint> {
         let mut sign_offs = HashMap::new();
-        sign_offs.insert(Reviewer("ferdinand"), 0x1c37b378d26a7d6b.into());
+        sign_offs.insert(Reviewer("ferdinand"), 0xe06aba73c3ca943e.into());
         sign_offs
     }
 }

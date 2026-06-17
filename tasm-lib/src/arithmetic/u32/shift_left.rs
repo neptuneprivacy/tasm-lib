@@ -72,7 +72,7 @@ impl BasicSnippet for ShiftLeft {
 
     fn sign_offs(&self) -> HashMap<Reviewer, SignOffFingerprint> {
         let mut sign_offs = HashMap::new();
-        sign_offs.insert(Reviewer("ferdinand"), 0xe393b3e57b439f68.into());
+        sign_offs.insert(Reviewer("ferdinand"), 0x6d726e1ee274cd13.into());
         sign_offs
     }
 }
