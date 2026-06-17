@@ -56,6 +56,7 @@ pub struct StarkVerify {
 
 impl StarkVerify {
     const LOG2_PADDED_HEIGHT_TOO_LARGE: i128 = 238;
+    const LOG2_PADDED_HEIGHT_TOO_SMALL: i128 = 239;
 
     pub fn new_with_static_layout(stark: Stark) -> Self {
         Self {
@@ -746,7 +747,7 @@ impl BasicSnippet for StarkVerify {
                 pop 1
                 // _ *clm *p_iter log_2_padded_height
 
-                /* Verify log_2_padded_height <= 31 */
+                /* Verify log_2_padded_height <= 31 && log_2_padded_height >= 8 */
                 push 32
                 dup 1
                 lt
@@ -754,6 +755,16 @@ impl BasicSnippet for StarkVerify {
 
                 assert error_id {Self::LOG2_PADDED_HEIGHT_TOO_LARGE}
                 // _ *clm *p_iter log_2_padded_height
+
+                push 8
+                dup 1
+                lt
+                push 0
+                eq
+                // _ *clm *p_iter log_2_padded_height (8 <= log_2_padded_height)
+
+                assert error_id {Self::LOG2_PADDED_HEIGHT_TOO_SMALL}
+
 
                 push 2
                 pow
@@ -1253,10 +1264,9 @@ pub mod tests {
         );
     }
 
-    #[macro_rules_attr::apply(test)]
-    fn fail_on_too_big_log2_padded_height() {
+    fn vm_state_for_log2_padded_height_proof_element(log2_padded_height: u32) -> VMState {
         let mut proof_stream = ProofStream::new();
-        proof_stream.enqueue(ProofItem::Log2PaddedHeight(32));
+        proof_stream.enqueue(ProofItem::Log2PaddedHeight(log2_padded_height));
         let proof: Proof = proof_stream.into();
 
         let mut nondeterminism = NonDeterminism::new(vec![]);
@@ -1274,10 +1284,12 @@ pub mod tests {
             stark: Stark::default(),
             memory_layout: MemoryLayout::conventional_static(),
         };
-        let default_proof_pointer = bfe!(0);
         let init_stack = [
             snippet.init_stack_for_isolated_run(),
-            vec![claim_pointer, default_proof_pointer],
+            vec![
+                claim_pointer,
+                FIRST_NON_DETERMINISTICALLY_INITIALIZED_MEMORY_ADDRESS,
+            ],
         ]
         .concat();
 
@@ -1285,15 +1297,42 @@ pub mod tests {
             Program::new(&snippet.link_for_isolated_run_populated_static_memory(claim_size));
         let mut vm_state = VMState::new(program, [].into(), nondeterminism.clone());
         vm_state.op_stack.stack = init_stack.clone();
-        let error = vm_state.run().unwrap_err();
-        match error {
-            InstructionError::AssertionFailed(assertion_error) => {
-                assert_eq!(
-                    StarkVerify::LOG2_PADDED_HEIGHT_TOO_LARGE,
-                    assertion_error.id.unwrap()
-                );
+
+        vm_state
+    }
+
+    #[macro_rules_attr::apply(test)]
+    fn fail_on_too_big_log2_padded_height() {
+        for too_big_padded_height in [32, 33, 40, 41, 999] {
+            let mut vm_state = vm_state_for_log2_padded_height_proof_element(too_big_padded_height);
+            let error = vm_state.run().unwrap_err();
+            match error {
+                InstructionError::AssertionFailed(assertion_error) => {
+                    assert_eq!(
+                        StarkVerify::LOG2_PADDED_HEIGHT_TOO_LARGE,
+                        assertion_error.id.unwrap()
+                    );
+                }
+                _ => panic!(),
             }
-            _ => panic!(),
+        }
+    }
+
+    #[macro_rules_attr::apply(test)]
+    fn fail_on_too_small_log2_padded_height() {
+        for too_small_padded_height in 0..8 {
+            let mut vm_state =
+                vm_state_for_log2_padded_height_proof_element(too_small_padded_height);
+            let error = vm_state.run().unwrap_err();
+            match error {
+                InstructionError::AssertionFailed(assertion_error) => {
+                    assert_eq!(
+                        StarkVerify::LOG2_PADDED_HEIGHT_TOO_SMALL,
+                        assertion_error.id.unwrap()
+                    );
+                }
+                _ => panic!(),
+            }
         }
     }
 
