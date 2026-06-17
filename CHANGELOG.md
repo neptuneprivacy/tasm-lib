@@ -3,6 +3,27 @@
 All notable changes are documented in this file.
 Lines marked “(!)” indicate a breaking change.
 
+## [7.0.0](https://github.com/TritonVM/tasm-lib/compare/v6.0.0..v7.0.0) - 2026-06-17
+
+### ⚙️ Miscellaneous
+
+- *(stark_verify)* Bound prover-provided log2 padded height >= 8 ([24523834](https://github.com/TritonVM/tasm-lib/commit/24523834))
+- *(!)* Upgrade upstream triton-vm to v7.0.0 ([4a0b83b3](https://github.com/TritonVM/tasm-lib/commit/4a0b83b3))
+
+### ✅ Testing
+
+- Verify that proof of smallest execution passes ([500cedda](https://github.com/TritonVM/tasm-lib/commit/500cedda))
+
+### Devops
+
+- Add script to replace all fingerprints ([e9ba7bc0](https://github.com/TritonVM/tasm-lib/commit/e9ba7bc0))
+
+## [6.0.0](https://github.com/TritonVM/tasm-lib/compare/v4.0.0..v6.0.0) - 2026-06-16
+
+### ⚙️ Miscellaneous
+
+- *(!)* Upgrade upstream triton-vm to v6.0.0
+
 ## [4.0.0](https://github.com/TritonVM/tasm-lib/compare/v3.0.1..v4.0.0) - 2026-06-10
 
 ### 🐛 Bug Fixes
