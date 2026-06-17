@@ -1421,6 +1421,29 @@ pub mod tests {
         }
     }
 
+    #[macro_rules_attr::apply(test)]
+    fn verify_shortest_possible_execution() {
+        let stark = Stark::default();
+
+        for memory_layout in [
+            MemoryLayout::conventional_static(),
+            MemoryLayout::conventional_dynamic(),
+        ] {
+            let program = triton_program!(halt);
+            let (_, inner_padded_height) = test_verify_and_report_basic_features(
+                NonDeterminism::default(),
+                program,
+                &[],
+                stark,
+                memory_layout,
+            );
+            assert_eq!(
+                256, inner_padded_height,
+                "This version of Triton VM has minimum padded height of 256"
+            )
+        }
+    }
+
     fn verify_tvm_proof_factorial_program_basic_properties(mem_layout: MemoryLayout) {
         const FACTORIAL_ARGUMENT: u32 = 3;
 
