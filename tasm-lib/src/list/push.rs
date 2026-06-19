@@ -124,10 +124,10 @@ impl BasicSnippet for Push {
     fn sign_offs(&self) -> HashMap<Reviewer, SignOffFingerprint> {
         let mut sign_offs = HashMap::new();
         match self.element_type.stack_size() {
-            1 => _ = sign_offs.insert(Reviewer("ferdinand"), 0x718981e3d21dc9d2.into()),
-            2 => _ = sign_offs.insert(Reviewer("ferdinand"), 0x885f097adff5e5f6.into()),
-            3 => _ = sign_offs.insert(Reviewer("ferdinand"), 0x9d962aecbcdf0a19.into()),
-            5 => _ = sign_offs.insert(Reviewer("ferdinand"), 0x1774f90a0fb1c3eb.into()),
+            1 => _ = sign_offs.insert(Reviewer("ferdinand"), 0x718b6042ba922862.into()),
+            2 => _ = sign_offs.insert(Reviewer("ferdinand"), 0xac38bc634708563e.into()),
+            3 => _ = sign_offs.insert(Reviewer("ferdinand"), 0xbe598f6165cf1bcc.into()),
+            5 => _ = sign_offs.insert(Reviewer("ferdinand"), 0xe568d3cb3a00c873.into()),
             _ => (),
         }
 
@@ -236,6 +236,6 @@ mod benches {
 
     #[macro_rules_attr::apply(test)]
     fn benchmark() {
-        ShadowedFunction::new(Push::new(DataType::Digest));
+        ShadowedFunction::new(Push::new(DataType::Digest)).bench();
     }
 }

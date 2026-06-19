@@ -505,7 +505,9 @@ impl TasmObject for Polynomial<'static, XFieldElement> {
         iterator.next().ok_or(BFieldCodecError::SequenceTooShort)?;
         let coefficients = *Vec::<XFieldElement>::decode_iter(iterator)?;
         if coefficients.last().is_some_and(|c| c.is_zero()) {
-            return Err(PolynomialBFieldCodecError::TrailingZerosInPolynomialEncoding)?;
+            return Err(Box::new(
+                PolynomialBFieldCodecError::TrailingZerosInPolynomialEncoding,
+            ));
         }
 
         Ok(Box::new(Self::new(coefficients)))

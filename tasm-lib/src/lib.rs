@@ -395,11 +395,10 @@ pub mod test_prelude {
             $item
         };
     }
-    pub(crate) use proptest;
-
     pub use std::collections::HashMap;
 
     pub use itertools::Itertools;
+    pub(crate) use proptest;
     pub use proptest::prelude::Just;
     pub use proptest::prelude::Strategy;
     pub use proptest::prelude::TestCaseError;

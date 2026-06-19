@@ -3,6 +3,55 @@
 All notable changes are documented in this file.
 Lines marked “(!)” indicate a breaking change.
 
+## [7.0.0](https://github.com/TritonVM/tasm-lib/compare/v6.0.0..v7.0.0) - 2026-06-17
+
+### ⚙️ Miscellaneous
+
+- *(stark_verify)* Bound prover-provided log2 padded height >= 8 ([24523834](https://github.com/TritonVM/tasm-lib/commit/24523834))
+- *(!)* Upgrade upstream triton-vm to v7.0.0 ([4a0b83b3](https://github.com/TritonVM/tasm-lib/commit/4a0b83b3))
+
+### ✅ Testing
+
+- Verify that proof of smallest execution passes ([500cedda](https://github.com/TritonVM/tasm-lib/commit/500cedda))
+
+### Devops
+
+- Add script to replace all fingerprints ([e9ba7bc0](https://github.com/TritonVM/tasm-lib/commit/e9ba7bc0))
+
+## [6.0.0](https://github.com/TritonVM/tasm-lib/compare/v4.0.0..v6.0.0) - 2026-06-16
+
+### ⚙️ Miscellaneous
+
+- *(!)* Upgrade upstream triton-vm to v6.0.0
+
+## [4.0.0](https://github.com/TritonVM/tasm-lib/compare/v3.0.1..v4.0.0) - 2026-06-10
+
+### 🐛 Bug Fixes
+
+- *(bench)* Actually benchmark `list::push` ([4b4ff9ab](https://github.com/TritonVM/tasm-lib/commit/4b4ff9ab))
+
+### 📚 Documentation
+
+- De-allocate now-unused error IDs ([1e3cbcbb](https://github.com/TritonVM/tasm-lib/commit/1e3cbcbb))
+
+## [3.0.1](https://github.com/TritonVM/tasm-lib/compare/v3.0.0..v3.0.1) - 2026-06-08
+
+### 🐛 Bug Fixes
+
+- *(verifier)* Bind static proof-item size word in Fiat-Shamir absorb ([7bc2c46a](https://github.com/TritonVM/tasm-lib/commit/7bc2c46a))
+- *(structure)* Bound static-element Vec/Polynomial length before mod-p multiply ([5d22b95e](https://github.com/TritonVM/tasm-lib/commit/5d22b95e))
+
+### 📚 Documentation
+
+- *(structure)* Clarify VerifyNdSiIntegrity's responsibility ([03f4c32e](https://github.com/TritonVM/tasm-lib/commit/03f4c32e))
+- *(hashing)* Document SampleIndices power-of-two precondition ([f5229956](https://github.com/TritonVM/tasm-lib/commit/f5229956))
+
+### ⚙️ Miscellaneous
+
+- Add regression PoC for unbound FS absorb length on static proof items ([79e11aac](https://github.com/TritonVM/tasm-lib/commit/79e11aac))
+
+
+
 ## [3.0.0](https://github.com/TritonVM/tasm-lib/compare/v2.0.0..v3.0.0) - 2026-05-13
 
 ### ✨ Features

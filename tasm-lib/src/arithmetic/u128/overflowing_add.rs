@@ -1,7 +1,11 @@
+use std::collections::HashMap;
+
 use triton_vm::prelude::*;
 
 use crate::arithmetic::u32::is_u32::IsU32;
 use crate::prelude::*;
+use crate::traits::basic_snippet::Reviewer;
+use crate::traits::basic_snippet::SignOffFingerprint;
 
 /// Mimics [`u128::overflowing_add`].
 ///
@@ -117,6 +121,12 @@ impl BasicSnippet for OverflowingAdd {
                 {&Self::addition_code()}
                 return
         }
+    }
+
+    fn sign_offs(&self) -> HashMap<Reviewer, SignOffFingerprint> {
+        let mut sign_offs = HashMap::new();
+        sign_offs.insert(Reviewer("ferdinand"), 0xc215579f044f8e5f.into());
+        sign_offs
     }
 }
 

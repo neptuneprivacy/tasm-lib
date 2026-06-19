@@ -83,7 +83,7 @@ impl BasicSnippet for ToThePowerOfPowerOf2 {
 
     fn sign_offs(&self) -> HashMap<Reviewer, SignOffFingerprint> {
         let mut sign_offs = HashMap::new();
-        sign_offs.insert(Reviewer("ferdinand"), 0xd05170d4c435dfad.into());
+        sign_offs.insert(Reviewer("ferdinand"), 0xdb5c37f70692be5.into());
         sign_offs
     }
 }

@@ -64,7 +64,7 @@ impl BasicSnippet for And {
 
     fn sign_offs(&self) -> HashMap<Reviewer, SignOffFingerprint> {
         let mut sign_offs = HashMap::new();
-        sign_offs.insert(Reviewer("ferdinand"), 0x606b07d7252afa58.into());
+        sign_offs.insert(Reviewer("ferdinand"), 0xe2425e5fcd091126.into());
         sign_offs
     }
 }

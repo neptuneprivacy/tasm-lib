@@ -64,7 +64,7 @@ impl BasicSnippet for HashVarlen {
 
     fn sign_offs(&self) -> HashMap<Reviewer, SignOffFingerprint> {
         let mut sign_offs = HashMap::new();
-        sign_offs.insert(Reviewer("ferdinand"), 0x210c72ced00922c8.into());
+        sign_offs.insert(Reviewer("ferdinand"), 0xc1f5f47443f638ab.into());
         sign_offs
     }
 }

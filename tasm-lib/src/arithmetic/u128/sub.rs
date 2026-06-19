@@ -1,7 +1,11 @@
+use std::collections::HashMap;
+
 use triton_vm::prelude::*;
 
 use crate::arithmetic::u128::overflowing_add::OverflowingAdd;
 use crate::prelude::*;
+use crate::traits::basic_snippet::Reviewer;
+use crate::traits::basic_snippet::SignOffFingerprint;
 
 /// [Subtraction][sub] for unsigned 128-bit integers.
 ///
@@ -101,6 +105,12 @@ impl BasicSnippet for Sub {
                             // _ [diff: u128]
                 return
         )
+    }
+
+    fn sign_offs(&self) -> HashMap<Reviewer, SignOffFingerprint> {
+        let mut sign_offs = HashMap::new();
+        sign_offs.insert(Reviewer("ferdinand"), 0xa5c44ced61062b70.into());
+        sign_offs
     }
 }
 

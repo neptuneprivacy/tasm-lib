@@ -69,5 +69,4 @@ often.
 |  580..590 | [`u160::SafeMul`](arithmetic/u160/safe_mul.rs)                                              |
 |  590..600 | [`u160::DivMod`](arithmetic/u160/div_mod.rs)                                                |
 |  600..610 | [`u192::SafeAdd`](arithmetic/u192/safe_add.rs)                                              |
-|  610..620 | [`u128::OverflowingAdd`](arithmetic/u128/overflowing_add.rs) operand u32-checks, shared by `u128::SafeAdd`/`u128::Sub` |
-| 620..630  | [`dequeue_next_as::DequeNextAs`](verifier/vm_proof_iter/dequeue_next_as.rs)                 |
+|  620..630 | [`dequeue_next_as::DequeNextAs`](verifier/vm_proof_iter/dequeue_next_as.rs)                 |
